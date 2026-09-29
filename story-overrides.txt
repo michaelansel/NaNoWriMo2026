@@ -12,3 +12,4 @@
 # intentional-conflict: <label> = <name> | <words from one side>
 #     A contradiction the writers mean; it is listed as a mystery, not reported as a mistake.
 #     intentional-conflict: widow's past = Widow Kestle | never anyone's wife
+# (test PR: a comment-only change, to check that the preview reuses saved extractions)
