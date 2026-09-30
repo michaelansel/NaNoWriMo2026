@@ -1,0 +1,13 @@
+:: Day 30 ZZ
+Wren’s lamp was out.   
+“Keep to the bank,” Tam said. ‘Always.’
+
+
+(set: $note to “Tam’s rule”)
+(if: $note is "Tam’s (first) rule")[She didn’t argue.]
+<span title="Tam’s">Tam’s pole</span> leaned by the door.
+
+[[Follow Tam’s lantern->Tam’s lantern]]
+
+:: Tam’s lantern
+The lantern swung. It’s late.
