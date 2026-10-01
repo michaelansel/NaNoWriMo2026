@@ -201,6 +201,9 @@ simplicity.
 
 - Writers commit through the GitHub web UI, see results in pull request comments and the preview,
   and run the few on-demand commands as pull request comments (see the Writer's Guide on the site).
+- Writer documentation has one home, the Writer's Guide on the site, read alongside the GitHub web
+  UI. Every other document in the repository, Claude docs included, is written for the organiser and
+  developer and never carries writer material.
 - Writers never install tools, run commands, or run Claude in the repository.
 - The `nanoif` CLI is a developer tool. It is not documented in writer guides and is not a supported
   way to contribute.
