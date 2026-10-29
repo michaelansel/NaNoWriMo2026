@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://nanowrimo2025.example.com/schemas/passages_deduplicated.json",
+  "$id": "https://nanoif.invalid/schemas/artifacts/passages_deduplicated.schema.json",
   "title": "Passages Deduplicated",
   "description": "Flat list of passages with content hashes for deduplication",
   "type": "object",
