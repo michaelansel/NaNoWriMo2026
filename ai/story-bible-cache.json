@@ -2,8 +2,8 @@
   "conflicts": {},
   "entities": {},
   "extraction": {
-    "commit": "4b03ce09e48feff6f0a146a92ef2fe9caa7fc2d5",
-    "extracted_at": "2026-10-29T01:45:23Z",
+    "commit": "0fdbaa5f09c26c88371cad057047cd901629a8d8",
+    "extracted_at": "2026-11-02T15:00:20Z",
     "mode": "incremental",
     "model": "fireworks/glm-5p3-flash",
     "profile": "exe",
@@ -12,12 +12,12 @@
       "bible_reconcile": "e03107818f6a",
       "bible_resolve": "07a2de1d4ebe"
     },
-    "usd": 0.0,
+    "usd": 0.000238,
     "usd_known": true
   },
   "passages": {
     "Start": {
-      "content_hash": "82e6ca5c07ea7b59",
+      "content_hash": "0dda1f971ca0f843",
       "dropped": {
         "generic_entity": 0,
         "state": 0,
@@ -27,7 +27,7 @@
       "file": "src/Start.twee",
       "mentions": [],
       "references": [],
-      "summary": "The passage is only a placeholder; no story content yet."
+      "summary": "A start page with a link to Day 1 KY; no story content."
     }
   },
   "resolution": {},
