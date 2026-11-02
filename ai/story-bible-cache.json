@@ -2,8 +2,8 @@
   "conflicts": {},
   "entities": {},
   "extraction": {
-    "commit": "0fdbaa5f09c26c88371cad057047cd901629a8d8",
-    "extracted_at": "2026-11-02T15:00:20Z",
+    "commit": "be9d3491d5577ffa32cf0403654ff08425b862cd",
+    "extracted_at": "2026-11-02T15:07:50Z",
     "mode": "incremental",
     "model": "fireworks/glm-5p3-flash",
     "profile": "exe",
@@ -12,12 +12,12 @@
       "bible_reconcile": "e03107818f6a",
       "bible_resolve": "07a2de1d4ebe"
     },
-    "usd": 0.000238,
+    "usd": 0.000237,
     "usd_known": true
   },
   "passages": {
     "Start": {
-      "content_hash": "0dda1f971ca0f843",
+      "content_hash": "844ebd02d1d12782",
       "dropped": {
         "generic_entity": 0,
         "state": 0,
@@ -27,7 +27,7 @@
       "file": "src/Start.twee",
       "mentions": [],
       "references": [],
-      "summary": "A start page with a link to Day 1 KY; no story content."
+      "summary": "A stub passage that links to Day 1 KEB."
     }
   },
   "resolution": {},
