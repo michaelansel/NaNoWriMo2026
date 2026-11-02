@@ -1,4 +1,6 @@
 :: Start
 
-<!-- Placeholder: replace this text with the story's opening, then add a choice that leads to the first day's passage, named Day 1 followed by the writer's initials. Each day's file is src/INITIALS-YYYYMMDD.twee and starts with that Day passage. -->
-The story begins here soon.
+<!-- The first day's passage is Day 1 KY, in src/KY-20261101.twee. Until that file is merged, the choice below leads nowhere. -->
+The story begins here.
+
+[[Begin->Day 1 KY]]
