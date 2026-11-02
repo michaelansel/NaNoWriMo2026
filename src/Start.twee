@@ -1,6 +1,6 @@
 :: Start
 
-<!-- The first day's passage is Day 1 KY, in src/KY-20261101.twee. Until that file is merged, the choice below leads nowhere. -->
+<!-- The first day's passage is Day 1 KEB, in src/KEB-20261101.twee. Until that file is merged, the choice below leads nowhere. -->
 The story begins here.
 
-[[Begin->Day 1 KY]]
+[[Begin->Day 1 KEB]]
