@@ -16,7 +16,7 @@
 
 set -euo pipefail
 
-BRANCH=ai-state-missing
+BRANCH=ai-state
 WORKTREE=.ai-state
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
