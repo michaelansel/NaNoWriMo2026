@@ -5,17 +5,25 @@
       "aliases": [],
       "facts": [
         {
-          "claim": "The Arcane Ward is a necklace-like device that weakens and reduces all magical effects directed at Devna",
+          "claim": "The Arcane Ward is a small device shaped to be worn as a necklace that weakens and reduces all magical effects directed at Devna",
           "duplicate_of": null,
           "id": "arcane-ward#1",
           "kind": "trait",
           "passage": "Day 3 KEB",
           "quote": "It was a small device shaped to be pretty enough to wear as a necklace, but the important part was it weakened and reduced all magical effects directed at her."
+        },
+        {
+          "claim": "Devna wears the Arcane Ward",
+          "duplicate_of": null,
+          "id": "arcane-ward#2",
+          "kind": "possession",
+          "passage": "Day 3 KEB",
+          "quote": "She walked through with her hand at her Arcane Ward, ready to flick it on once through."
         }
       ],
       "merged_into": null,
       "name": "Arcane Ward",
-      "next_n": 2,
+      "next_n": 3,
       "passages": [
         "Day 3 KEB"
       ],
@@ -32,20 +40,12 @@
       ],
       "facts": [
         {
-          "claim": "Devna Sorrel is human",
+          "claim": "Devna is human",
           "duplicate_of": null,
           "id": "devna-sorrel#1",
           "kind": "trait",
           "passage": "Day 3 KEB",
-          "quote": "Being human, if there was something wacky going on with magic she wouldn\u2019t be paralyzed by it."
-        },
-        {
-          "claim": "Devna spent more than three years in theory, technology and training for the expedition",
-          "duplicate_of": null,
-          "id": "devna-sorrel#2",
-          "kind": "event",
-          "passage": "Day 3 KEB",
-          "quote": "After more then three years of theory and finetuning technology and training, they were finally ready."
+          "quote": "Being human, if there was something wacky going on with magic she wouldn't be paralyzed by it."
         },
         {
           "claim": "Devna is Myor's partner for the expedition",
@@ -56,23 +56,15 @@
           "quote": "The fact her partner was a Ratfolk was one of the better outcomes Devna hoped for."
         },
         {
-          "claim": "Devna built the Arcane Ward as part of her thesis nearly a decade ago",
+          "claim": "Devna built the Arcane Ward as part of her thesis nearly a decade ago and improved it over the years",
           "duplicate_of": null,
           "id": "devna-sorrel#4",
           "kind": "event",
           "passage": "Day 3 KEB",
-          "quote": "She\u2019d built it as part of her thesis nearly a decade ago and through tinkering had improved it over the years."
+          "quote": "She'd built it as part of her thesis nearly a decade ago and through tinkering had improved it over the years."
         },
         {
-          "claim": "Devna redesigned the Home Anchor over nearly eleven months to make it durable",
-          "duplicate_of": null,
-          "id": "devna-sorrel#5",
-          "kind": "event",
-          "passage": "Day 3 KEB",
-          "quote": "Devna knew because she had spent nearly eleven months redesigning it to ensure it wouldn\u2019t accidentally break and strand Myor"
-        },
-        {
-          "claim": "Devna successfully argued the Wayfarer Sigil should have a different name from the Home Anchor",
+          "claim": "Devna successfully argued the Wayfarer Sigil should have a different name from the Home Anchor, overruling Jackson",
           "duplicate_of": null,
           "id": "devna-sorrel#6",
           "kind": "event",
@@ -80,22 +72,68 @@
           "quote": "she had successfully argued they should have different names."
         },
         {
-          "claim": "It was decided during training that Devna would go first through the portal",
+          "claim": "Devna trained over three years and bonded best with Myor during the initial training to select the final candidates",
           "duplicate_of": null,
-          "id": "devna-sorrel#7",
+          "id": "devna-sorrel#8",
           "kind": "event",
           "passage": "Day 3 KEB",
-          "quote": "During training they had decided it made most since for Devna to go first."
+          "quote": "Devna had bonded best with Myor during the initial training to select the final candidates."
+        },
+        {
+          "claim": "Devna gives Jackson a hard time but acknowledges he pushed hard for the expedition",
+          "duplicate_of": null,
+          "id": "devna-sorrel#9",
+          "kind": "relationship",
+          "passage": "Day 3 KEB",
+          "quote": "As much shit as Devna liked to give him, they'd never have made it this far if Jackson hadn't pushed so hard for it."
+        },
+        {
+          "claim": "Devna was the first to walk through the portal",
+          "duplicate_of": null,
+          "id": "devna-sorrel#10",
+          "kind": "event",
+          "passage": "Day 3 KEB",
+          "quote": "Devna led the way."
+        },
+        {
+          "claim": "Devna tripped and fell into a large fallen log on arriving in the forest",
+          "duplicate_of": null,
+          "id": "devna-sorrel#11",
+          "kind": "event",
+          "passage": "Day 3 KEB",
+          "quote": "Then Devna tripped over something and fell face first into bark."
         }
       ],
       "merged_into": null,
       "name": "Devna Sorrel",
-      "next_n": 8,
+      "next_n": 12,
       "passages": [
         "Day 3 KEB"
       ],
       "reconcile": "done",
-      "retired": [],
+      "retired": [
+        {
+          "claim": "Devna spent more than three years in theory, technology and training for the expedition",
+          "id": "devna-sorrel#2",
+          "passage": "Day 3 KEB",
+          "reason": "passage_changed",
+          "retired_commit": "924b4f8a48419142e9aa75f575e109b8c56ae392"
+        },
+        {
+          "claim": "Devna redesigned the Home Anchor over nearly eleven months to make it durable",
+          "id": "devna-sorrel#5",
+          "passage": "Day 3 KEB",
+          "reason": "passage_changed",
+          "retired_commit": "924b4f8a48419142e9aa75f575e109b8c56ae392"
+        },
+        {
+          "claim": "It was decided during training that Devna would go first through the portal",
+          "id": "devna-sorrel#7",
+          "passage": "Day 3 KEB",
+          "reason": "passage_changed",
+          "retired_commit": "924b4f8a48419142e9aa75f575e109b8c56ae392"
+        }
+      ],
       "role": "portal expedition explorer",
       "slug": "devna-sorrel",
       "type": "character"
@@ -104,30 +142,53 @@
       "aliases": [],
       "facts": [
         {
-          "claim": "The Home Anchor is a small cylinder durable enough not to break and strand Myor",
+          "claim": "The Home Anchor is a small cylinder",
           "duplicate_of": null,
-          "id": "home-anchor#1",
+          "id": "home-anchor#3",
           "kind": "trait",
           "passage": "Day 3 KEB",
-          "quote": "It was durable, Devna knew because she had spent nearly eleven months redesigning it to ensure it wouldn\u2019t accidentally break and strand Myor if anything forced them to split up."
+          "quote": "He pulled out the Home Anchor, a small cylinder that fit easily into his smaller hands"
         },
         {
-          "claim": "The Home Anchor is secured in Myor's belt pouch",
+          "claim": "Devna spent nearly eleven months redesigning the Home Anchor so it wouldn't break and strand Myor if they split up",
           "duplicate_of": null,
-          "id": "home-anchor#2",
+          "id": "home-anchor#4",
+          "kind": "event",
+          "passage": "Day 3 KEB",
+          "quote": "she had spent nearly eleven months redesigning it to ensure it wouldn't accidentally break and strand Myor if anything forced them to split up."
+        },
+        {
+          "claim": "Myor carries the Home Anchor secured on his person",
+          "duplicate_of": null,
+          "id": "home-anchor#5",
           "kind": "possession",
           "passage": "Day 3 KEB",
-          "quote": "Myor said, patting the belt pouch the Home Anchor was in."
+          "quote": "Mr. Ackeray, confirm the Home Anchor is secured on your person,\" Jackson called"
         }
       ],
       "merged_into": null,
       "name": "Home Anchor",
-      "next_n": 3,
+      "next_n": 6,
       "passages": [
         "Day 3 KEB"
       ],
       "reconcile": "done",
-      "retired": [],
+      "retired": [
+        {
+          "claim": "The Home Anchor is a small cylinder durable enough not to break and strand Myor",
+          "id": "home-anchor#1",
+          "passage": "Day 3 KEB",
+          "reason": "passage_changed",
+          "retired_commit": "924b4f8a48419142e9aa75f575e109b8c56ae392"
+        },
+        {
+          "claim": "The Home Anchor is secured in Myor's belt pouch",
+          "id": "home-anchor#2",
+          "passage": "Day 3 KEB",
+          "reason": "passage_changed",
+          "retired_commit": "924b4f8a48419142e9aa75f575e109b8c56ae392"
+        }
+      ],
       "role": "return-anchor device carried by Myor",
       "slug": "home-anchor",
       "type": "item"
@@ -144,12 +205,12 @@
           "quote": "A heavyset elf, he dressed impeccably and was proud to lead this expedition."
         },
         {
-          "claim": "Jackson pushed hard to make the expedition happen",
+          "claim": "Jackson pushed hard for the expedition",
           "duplicate_of": null,
           "id": "jackson#2",
           "kind": "event",
           "passage": "Day 3 KEB",
-          "quote": "they\u2019d never have made it this far if Jackson hadn\u2019t pushed so hard for it."
+          "quote": "they'd never have made it this far if Jackson hadn't pushed so hard for it."
         },
         {
           "claim": "Jackson was overruled by Devna and Myor in naming the Wayfarer Sigil",
@@ -158,11 +219,19 @@
           "kind": "event",
           "passage": "Day 3 KEB",
           "quote": "Jackson was just sore that her and Myor overruled him in naming it."
+        },
+        {
+          "claim": "Jackson leads the expedition",
+          "duplicate_of": null,
+          "id": "jackson#4",
+          "kind": "relationship",
+          "passage": "Day 3 KEB",
+          "quote": "A heavyset elf, he dressed impeccably and was proud to lead this expedition."
         }
       ],
       "merged_into": null,
       "name": "Jackson",
-      "next_n": 4,
+      "next_n": 5,
       "passages": [
         "Day 3 KEB"
       ],
@@ -179,7 +248,7 @@
       ],
       "facts": [
         {
-          "claim": "Myor is a Ratfolk on the taller side, just over five feet",
+          "claim": "Myor is on the taller side of the Ratfolk at just over five feet",
           "duplicate_of": null,
           "id": "myor-ackeray#1",
           "kind": "trait",
@@ -187,7 +256,7 @@
           "quote": "he was on the taller side of the Ratfolk at just over five feet"
         },
         {
-          "claim": "Myor is a silent caster who needs no vocals or gestures to control his magic",
+          "claim": "Myor is a silent caster who needs no vocals or gestures to control magic",
           "duplicate_of": null,
           "id": "myor-ackeray#2",
           "kind": "trait",
@@ -195,15 +264,7 @@
           "quote": "he was a silent caster. It was a point of pride that he was skilled enough to not need vocal or gestures to aid his control."
         },
         {
-          "claim": "Myor carries the Home Anchor",
-          "duplicate_of": null,
-          "id": "myor-ackeray#3",
-          "kind": "possession",
-          "passage": "Day 3 KEB",
-          "quote": "He pulled out the Home Anchor, a small cylinder that fit easily into his smaller hands"
-        },
-        {
-          "claim": "Myor prefers water-related descriptions when describing magic",
+          "claim": "Myor tends to prefer water-related descriptions of magic",
           "duplicate_of": null,
           "id": "myor-ackeray#4",
           "kind": "trait",
@@ -211,22 +272,53 @@
           "quote": "Myor himself tended to prefer water related descriptions."
         },
         {
-          "claim": "Myor bonded best with Devna during the initial training to select the final candidates",
+          "claim": "Myor is a Ratfolk",
           "duplicate_of": null,
-          "id": "myor-ackeray#5",
-          "kind": "relationship",
+          "id": "myor-ackeray#6",
+          "kind": "trait",
           "passage": "Day 3 KEB",
-          "quote": "Devna had bonded best with Myor during the initial training to select the final candidates."
+          "quote": "The fact her partner was a Ratfolk was one of the better outcomes Devna hoped for."
+        },
+        {
+          "claim": "Myor has smaller hands",
+          "duplicate_of": null,
+          "id": "myor-ackeray#7",
+          "kind": "trait",
+          "passage": "Day 3 KEB",
+          "quote": "a small cylinder that fit easily into his smaller hands"
+        },
+        {
+          "claim": "Myor cast a light orb in the giant forest",
+          "duplicate_of": null,
+          "id": "myor-ackeray#8",
+          "kind": "event",
+          "passage": "Day 3 KEB",
+          "quote": "light started gathering until a small orb bobbed gently around Myor"
         }
       ],
       "merged_into": null,
       "name": "Myor Ackeray",
-      "next_n": 6,
+      "next_n": 9,
       "passages": [
         "Day 3 KEB"
       ],
       "reconcile": "done",
-      "retired": [],
+      "retired": [
+        {
+          "claim": "Myor carries the Home Anchor",
+          "id": "myor-ackeray#3",
+          "passage": "Day 3 KEB",
+          "reason": "passage_changed",
+          "retired_commit": "924b4f8a48419142e9aa75f575e109b8c56ae392"
+        },
+        {
+          "claim": "Myor bonded best with Devna during the initial training to select the final candidates",
+          "id": "myor-ackeray#5",
+          "passage": "Day 3 KEB",
+          "reason": "passage_changed",
+          "retired_commit": "924b4f8a48419142e9aa75f575e109b8c56ae392"
+        }
+      ],
       "role": "portal expedition explorer, Devna's partner",
       "slug": "myor-ackeray",
       "type": "character"
@@ -235,30 +327,45 @@
       "aliases": [],
       "facts": [
         {
-          "claim": "Ratfolk prefer a vegetarian diet but can eat almost anything",
+          "claim": "Ratfolk are one of the more adaptable peoples: they prefer a vegetarian diet but can eat almost anything, and are wily, flexible in thinking, and social",
           "duplicate_of": null,
-          "id": "ratfolk#1",
+          "id": "ratfolk#3",
           "kind": "trait",
           "passage": "Day 3 KEB",
-          "quote": "While they preferred a vegetarian diet, they could eat almost anything."
+          "quote": "While they preferred a vegetarian diet, they could eat almost anything. They were wily, flexible in thinking, and social."
         },
         {
-          "claim": "Ratfolk are wily, flexible in thinking, and social",
+          "claim": "There were concerns that Ratfolk and Humans strengths were too similar",
           "duplicate_of": null,
-          "id": "ratfolk#2",
-          "kind": "trait",
+          "id": "ratfolk#4",
+          "kind": "event",
           "passage": "Day 3 KEB",
-          "quote": "They were wily, flexible in thinking, and social."
+          "quote": "There had been concerns that Ratfolk and Humans strengths were too similar which meant they weren't covering for their weaknesses"
         }
       ],
       "merged_into": null,
       "name": "Ratfolk",
-      "next_n": 3,
+      "next_n": 5,
       "passages": [
         "Day 3 KEB"
       ],
       "reconcile": "done",
-      "retired": [],
+      "retired": [
+        {
+          "claim": "Ratfolk prefer a vegetarian diet but can eat almost anything",
+          "id": "ratfolk#1",
+          "passage": "Day 3 KEB",
+          "reason": "passage_changed",
+          "retired_commit": "924b4f8a48419142e9aa75f575e109b8c56ae392"
+        },
+        {
+          "claim": "Ratfolk are wily, flexible in thinking, and social",
+          "id": "ratfolk#2",
+          "passage": "Day 3 KEB",
+          "reason": "passage_changed",
+          "retired_commit": "924b4f8a48419142e9aa75f575e109b8c56ae392"
+        }
+      ],
       "role": "adaptable people Myor belongs to",
       "slug": "ratfolk",
       "type": "group"
@@ -267,7 +374,7 @@
       "aliases": [],
       "facts": [
         {
-          "claim": "The forest on the other side of the portal has giant trees, thick undergrowth, high humidity, and a night-like darkness under a canopy",
+          "claim": "The forest on the other side of the portal has giant trees, thick undergrowth, a night-like darkness under a high canopy, and humid still air",
           "duplicate_of": null,
           "id": "the-giant-forest#1",
           "kind": "trait",
@@ -275,30 +382,38 @@
           "quote": "The trees were giant, stretching far above with the lowermost branches only just barely within the light spell."
         },
         {
-          "claim": "The forest's magic feels heavy, like syrup, to Myor",
+          "claim": "The magic in the forest feels heavy, like syrup, to Myor",
           "duplicate_of": null,
           "id": "the-giant-forest#2",
           "kind": "trait",
           "passage": "Day 3 KEB",
-          "quote": "But the magic here is\u2026 heavy."
+          "quote": "No no, like syrup,\" Myor corrected."
         },
         {
-          "claim": "A deliberately cleared and likely maintained dirt road runs through the forest near the portal",
+          "claim": "The forest shows a strong indication of magic in the surroundings",
           "duplicate_of": null,
-          "id": "the-giant-forest#3",
-          "kind": "location",
+          "id": "the-giant-forest#4",
+          "kind": "trait",
           "passage": "Day 3 KEB",
-          "quote": "the undergrowth made way for dirt path. It wasn\u2019t paved, but even from this distance it was clear the undergrowth had been deliberately cleared and was likely maintained."
+          "quote": "Her tech was running strong and had a strong indication of magic in the surrounding."
         }
       ],
       "merged_into": null,
       "name": "the giant forest",
-      "next_n": 4,
+      "next_n": 5,
       "passages": [
         "Day 3 KEB"
       ],
       "reconcile": "done",
-      "retired": [],
+      "retired": [
+        {
+          "claim": "A deliberately cleared and likely maintained dirt road runs through the forest near the portal",
+          "id": "the-giant-forest#3",
+          "passage": "Day 3 KEB",
+          "reason": "passage_changed",
+          "retired_commit": "924b4f8a48419142e9aa75f575e109b8c56ae392"
+        }
+      ],
       "role": "destination world reached through the portal",
       "slug": "the-giant-forest",
       "type": "location"
@@ -309,7 +424,7 @@
       ],
       "facts": [
         {
-          "claim": "The portal frame is a permanent installation that finetunes portal crafting and acts as an anchor for return",
+          "claim": "The portal frame is a permanent installation that finetunes portal crafting to travel beyond their own world and acts as an anchor to allow return",
           "duplicate_of": null,
           "id": "the-portal-frame#1",
           "kind": "trait",
@@ -317,17 +432,25 @@
           "quote": "a permanent installation that finetuned the portal crafting that would allow them to travel beyond their own world and act as an anchor to allow them to return."
         },
         {
-          "claim": "The expedition opened several portals in the three months before this one, but this was the first anyone traveled through",
+          "claim": "Several portals were opened over the last three months, but this was the first one anyone traveled through",
           "duplicate_of": null,
           "id": "the-portal-frame#2",
           "kind": "event",
           "passage": "Day 3 KEB",
-          "quote": "They\u2019d opened several portals over the last three months, but this would be the first one anyone actually traveled through."
+          "quote": "They'd opened several portals over the last three months, but this would be the first one anyone actually traveled through."
+        },
+        {
+          "claim": "The portal will be left open for five minutes to allow immediate return if the other side is inhospitable",
+          "duplicate_of": null,
+          "id": "the-portal-frame#3",
+          "kind": "rule",
+          "passage": "Day 3 KEB",
+          "quote": "We will leave it open for five minutes to provide the opportunity for your immediate return if for any reason the other side is inhospitable."
         }
       ],
       "merged_into": null,
       "name": "the portal frame",
-      "next_n": 3,
+      "next_n": 4,
       "passages": [
         "Day 3 KEB"
       ],
@@ -337,42 +460,76 @@
       "slug": "the-portal-frame",
       "type": "item"
     },
-    "wayfarer-sigil": {
-      "aliases": [],
+    "the-road": {
+      "aliases": [
+        "dirt path"
+      ],
       "facts": [
         {
-          "claim": "The Wayfarer Sigil is a cylinder similar to the Home Anchor that serves a similar function through different means",
+          "claim": "Near the arrival point the undergrowth gives way to an unpaved dirt path that was deliberately cleared and is likely maintained",
           "duplicate_of": null,
-          "id": "wayfarer-sigil#1",
-          "kind": "trait",
+          "id": "the-road#1",
+          "kind": "location",
           "passage": "Day 3 KEB",
-          "quote": "Both items served a similar function, though through different means"
-        },
-        {
-          "claim": "The Wayfarer Sigil is secured in Devna's belt pouch",
-          "duplicate_of": null,
-          "id": "wayfarer-sigil#2",
-          "kind": "possession",
-          "passage": "Day 3 KEB",
-          "quote": "Devna grinned, patting her own belt pouch where a very similar cylinder to the Home Anchor was located."
+          "quote": "the undergrowth made way for dirt path. It wasn't paved, but even from this distance it was clear the undergrowth had been deliberately cleared and was likely maintained."
         }
       ],
       "merged_into": null,
-      "name": "Wayfarer Sigil",
-      "next_n": 3,
+      "name": "the road",
+      "next_n": 2,
       "passages": [
         "Day 3 KEB"
       ],
       "reconcile": "done",
       "retired": [],
+      "role": "unpaved path near the arrival point",
+      "slug": "the-road",
+      "type": "location"
+    },
+    "wayfarer-sigil": {
+      "aliases": [],
+      "facts": [
+        {
+          "claim": "The Wayfarer Sigil is a cylinder very similar to the Home Anchor and serves a similar function through different means",
+          "duplicate_of": null,
+          "id": "wayfarer-sigil#1",
+          "kind": "trait",
+          "passage": "Day 3 KEB",
+          "quote": "patting her own belt pouch where a very similar cylinder to the Home Anchor was located. Both items served a similar function, though through different means"
+        },
+        {
+          "claim": "Devna carries the Wayfarer Sigil secured on her person",
+          "duplicate_of": null,
+          "id": "wayfarer-sigil#3",
+          "kind": "possession",
+          "passage": "Day 3 KEB",
+          "quote": "Yup,\" Devna said, \"Wayfarer Sigil is secured and prepared for use on my person."
+        }
+      ],
+      "merged_into": null,
+      "name": "Wayfarer Sigil",
+      "next_n": 4,
+      "passages": [
+        "Day 3 KEB"
+      ],
+      "reconcile": "done",
+      "retired": [
+        {
+          "claim": "The Wayfarer Sigil is secured in Devna's belt pouch",
+          "id": "wayfarer-sigil#2",
+          "passage": "Day 3 KEB",
+          "reason": "passage_changed",
+          "retired_commit": "924b4f8a48419142e9aa75f575e109b8c56ae392"
+        }
+      ],
       "role": "return-anchor device carried by Devna",
       "slug": "wayfarer-sigil",
       "type": "item"
     }
   },
   "extraction": {
-    "commit": "676a9f106a8be0196e2225fc63c2f13a18da139b",
-    "extracted_at": "2026-11-04T12:20:32Z",
+    "commit": "924b4f8a48419142e9aa75f575e109b8c56ae392",
+    "extracted_at": "2026-11-04T20:02:22Z",
     "mode": "incremental",
     "model": "fireworks/glm-5p3-flash",
     "profile": "exe",
@@ -381,45 +538,52 @@
       "bible_reconcile": "e03107818f6a",
       "bible_resolve": "07a2de1d4ebe"
     },
-    "usd": 0.00025,
+    "usd": 0.000793,
     "usd_known": true
   },
   "passages": {
     "Day 3 KEB": {
-      "content_hash": "f7aa02cfa6734be2",
+      "content_hash": "69197e2fe9afa49d",
       "dropped": {
         "generic_entity": 0,
         "state": 0,
         "unverified_quote": 0
       },
       "fact_ids": [
+        "arcane-ward#1",
+        "arcane-ward#2",
         "devna-sorrel#1",
-        "devna-sorrel#2",
         "devna-sorrel#3",
         "devna-sorrel#4",
-        "devna-sorrel#5",
         "devna-sorrel#6",
-        "devna-sorrel#7",
-        "myor-ackeray#1",
-        "myor-ackeray#2",
-        "myor-ackeray#3",
-        "myor-ackeray#4",
-        "myor-ackeray#5",
+        "devna-sorrel#8",
+        "devna-sorrel#9",
+        "devna-sorrel#10",
+        "devna-sorrel#11",
+        "home-anchor#3",
+        "home-anchor#4",
+        "home-anchor#5",
         "jackson#1",
         "jackson#2",
         "jackson#3",
-        "home-anchor#1",
-        "home-anchor#2",
-        "wayfarer-sigil#1",
-        "wayfarer-sigil#2",
-        "arcane-ward#1",
-        "the-portal-frame#1",
-        "the-portal-frame#2",
-        "ratfolk#1",
-        "ratfolk#2",
+        "jackson#4",
+        "myor-ackeray#1",
+        "myor-ackeray#2",
+        "myor-ackeray#4",
+        "myor-ackeray#6",
+        "myor-ackeray#7",
+        "myor-ackeray#8",
+        "ratfolk#3",
+        "ratfolk#4",
         "the-giant-forest#1",
         "the-giant-forest#2",
-        "the-giant-forest#3"
+        "the-giant-forest#4",
+        "the-portal-frame#1",
+        "the-portal-frame#2",
+        "the-portal-frame#3",
+        "wayfarer-sigil#1",
+        "wayfarer-sigil#3",
+        "the-road#1"
       ],
       "file": "src/KEB-20261103.twee",
       "mentions": [
@@ -431,13 +595,19 @@
         "ratfolk",
         "the-giant-forest",
         "the-portal-frame",
+        "the-road",
         "wayfarer-sigil"
       ],
       "references": [
         {
+          "entity": null,
+          "pronoun": "they",
+          "quote": "After more then three years of theory and finetuning technology and training, they were finally ready."
+        },
+        {
           "entity": "devna-sorrel",
           "pronoun": "her",
-          "quote": "Devna bounced on her toes, resettling the bag on her back and tightening the straps just a nudge."
+          "quote": "Myor joined her, fidgeting with his own backpack straps then checking on the various tools attached to his belt."
         },
         {
           "entity": "myor-ackeray",
@@ -447,7 +617,12 @@
         {
           "entity": "myor-ackeray",
           "pronoun": "He",
-          "quote": "He pulled out the Home Anchor, a small cylinder that fit easily into his smaller hands, checking it over carefully before putting it back away."
+          "quote": "He pulled out the Home Anchor, a small cylinder that fit easily into his smaller hands"
+        },
+        {
+          "entity": "home-anchor",
+          "pronoun": "it",
+          "quote": "checking it over carefully before putting it back away."
         },
         {
           "entity": "devna-sorrel",
@@ -455,14 +630,14 @@
           "quote": "Devna knew because she had spent nearly eleven months redesigning it"
         },
         {
-          "entity": "devna-sorrel",
-          "pronoun": "her",
-          "quote": "The fact her partner was a Ratfolk was one of the better outcomes Devna hoped for."
-        },
-        {
           "entity": "myor-ackeray",
           "pronoun": "he",
-          "quote": "Not just because he was still shorter than Devna, even if he was on the taller side of the Ratfolk at just over five feet"
+          "quote": "Not just because he was still shorter than Devna, even if he was on the taller side of the Ratfolk"
+        },
+        {
+          "entity": "ratfolk",
+          "pronoun": "they",
+          "quote": "While they preferred a vegetarian diet, they could eat almost anything."
         },
         {
           "entity": "devna-sorrel",
@@ -477,37 +652,27 @@
         {
           "entity": "jackson",
           "pronoun": "him",
-          "quote": "As much shit as Devna liked to give him, they\u2019d never have made it this far if Jackson hadn\u2019t pushed so hard for it."
+          "quote": "As much shit as Devna liked to give him, they'd never have made it this far if Jackson hadn't pushed so hard for it."
         },
         {
-          "entity": "devna-sorrel",
-          "pronoun": "her",
-          "quote": "Devna grinned, patting her own belt pouch where a very similar cylinder to the Home Anchor was located."
+          "entity": null,
+          "pronoun": "there",
+          "quote": "there was a slight flinch at the name"
         },
         {
-          "entity": "devna-sorrel",
-          "pronoun": "she",
-          "quote": "Being human, if there was something wacky going on with magic she wouldn\u2019t be paralyzed by it."
-        },
-        {
-          "entity": "devna-sorrel",
-          "pronoun": "She",
-          "quote": "She\u2019d built it as part of her thesis nearly a decade ago and through tinkering had improved it over the years."
-        },
-        {
-          "entity": "devna-sorrel",
-          "pronoun": "her",
-          "quote": "but the important part was it weakened and reduced all magical effects directed at her."
-        },
-        {
-          "entity": "devna-sorrel",
-          "pronoun": "she",
-          "quote": "Reaching the threshold she didn\u2019t pause."
-        },
-        {
-          "entity": "myor-ackeray",
+          "entity": "jackson",
           "pronoun": "him",
-          "quote": "Devna helped brace him, saving him from getting close and personal with the log"
+          "quote": "Jackson was just sore that her and Myor overruled him in naming it."
+        },
+        {
+          "entity": "jackson",
+          "pronoun": "He",
+          "quote": "He nodded towards the control room on the other side of protective glass before turning back to Myor and Devna"
+        },
+        {
+          "entity": null,
+          "pronoun": "Your",
+          "quote": "Your top priority is for both of you to return."
         },
         {
           "entity": "myor-ackeray",
@@ -515,27 +680,27 @@
           "quote": "Myor finally looked to Devon, whiskers twitching in excitement."
         },
         {
-          "entity": "myor-ackeray",
-          "pronoun": "him",
-          "quote": "Devna watched him bemused, he was a silent caster."
+          "entity": "devna-sorrel",
+          "pronoun": "she",
+          "quote": "Being human, if there was something wacky going on with magic she wouldn't be paralyzed by it."
+        },
+        {
+          "entity": "devna-sorrel",
+          "pronoun": "She",
+          "quote": "She'd built it as part of her thesis nearly a decade ago and through tinkering had improved it over the years."
         },
         {
           "entity": "devna-sorrel",
           "pronoun": "her",
-          "quote": "Myor started patting her arm in excitement"
+          "quote": "It was a small device shaped to be pretty enough to wear as a necklace, but the important part was it weakened and reduced all magical effects directed at her."
         },
         {
           "entity": "myor-ackeray",
           "pronoun": "He",
           "quote": "He clambered up and reached down a hand to help haul her up."
-        },
-        {
-          "entity": "devna-sorrel",
-          "pronoun": "her",
-          "quote": "He clambered up and reached down a hand to help haul her up."
         }
       ],
-      "summary": "Devna Sorrel and Myor Ackeray, led by Jackson, become the first travelers through their portal, arriving in a dark, humid giant forest where they find magic works, their gear functions, and a maintained dirt road runs nearby."
+      "summary": "Devna Sorrel and Myor Ackeray become the first travelers through the portal, arriving in a dark giant forest where they find magic works, Devna's tech runs, and a maintained dirt road nearby."
     },
     "Start": {
       "content_hash": "d22f6f8cb58fc604",
@@ -555,6 +720,7 @@
     "arcane ward": "arcane-ward",
     "devna": "devna-sorrel",
     "devna sorrel": "devna-sorrel",
+    "dirt path": "the-road",
     "giant forest": "the-giant-forest",
     "home anchor": "home-anchor",
     "jackson": "jackson",
@@ -565,6 +731,7 @@
     "portal": "the-portal-frame",
     "portal frame": "the-portal-frame",
     "ratfolk": "ratfolk",
+    "road": "the-road",
     "wayfarer sigil": "wayfarer-sigil"
   },
   "version": 2
