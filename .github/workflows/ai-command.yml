@@ -132,7 +132,7 @@ jobs:
             --body "Nothing ran: AI commands run only for branches in this repository, not forks."
 
   build:
-    name: build
+    name: build (command)
     needs: parse
     if: needs.parse.outputs.command == 'check-continuity' && needs.parse.outputs.error == '' && needs.parse.outputs.same_repo == 'true'
     runs-on: ubuntu-latest
@@ -434,6 +434,7 @@ jobs:
             --reason "$REASON" --review "$REVIEW" --out ai/dismissals.jsonl
 
       - name: Commit to the default branch
+        id: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -469,3 +470,9 @@ jobs:
         run: |
           gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body \
             "Could not dismiss \`${KEY}\`: no review result for this pull request is available, or the key is not in it. Nothing was recorded. Run \`/check-continuity\`, then \`/dismiss\` again."
+
+      - name: Reply when the dismissal could not be saved
+        if: failure() && steps.commit.outcome == 'failure'
+        run: |
+          gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body \
+            "Could not dismiss \`${KEY}\`: saving it to the story failed, so nothing was recorded. Try \`/dismiss\` again later; if it fails again, ask the organiser."

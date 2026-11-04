@@ -141,7 +141,7 @@ jobs:
           override: ${{ vars.AI_RUNNER }}
 
   build:
-    name: build
+    name: build (check-all)
     if: github.event_name == 'workflow_dispatch' && inputs.task == 'check-all'
     runs-on: ubuntu-latest
     timeout-minutes: 20
