@@ -45,8 +45,15 @@ approves or triggers the deploy. Refreshing the Story Bible before the deploy is
 anything but the formatting fix ([structure-check](structure-check.md), AC-structure-check-27),
 whose fixed commit is then built in place of the writer's. Each kind of bot comment appears once
 per pull request and is edited in place (AC-build-and-deploy-6 for the Build comment). Write
-access to the repository is reserved for the main-branch jobs that record the `ai/` state files
-and the formatting fix (AC-build-and-deploy-10).
+access to the repository is reserved for the formatting fix and the jobs that record the `ai/`
+state files, which they save on the `ai-state` branch, never on `main` (AC-build-and-deploy-10).
+Every build reads that saved state first; if it cannot, the build stops rather than publish an
+empty Story Bible (AC-build-and-deploy-13).
+
+**`main` changes only through a merged pull request.** A writer cannot save to `main` directly
+([web-editing](web-editing.md)), and a pull request can be merged only once its `build`, `test`
+and `intent` checks pass (AC-build-and-deploy-14). The structure, formatting and AI checks never
+block a merge. Only the organiser, as repository admin, can bypass this.
 
 **What the writer sees, and where**
 
@@ -58,6 +65,7 @@ and the formatting fix (AC-build-and-deploy-10).
 | Build finished | Files changed view | Structure and formatting annotations ([structure-check](structure-check.md)) |
 | Merged | GitHub Pages | The landing page and every page, updated |
 | Build failed | Checks list and run log | A red check naming the failing step |
+| `build`, `test` or `intent` pending or red | Merge box on the pull request | Merging is blocked until all three pass |
 
 The live site's address is the repository's GitHub Pages address; the landing page is its root.
 
@@ -71,19 +79,27 @@ The live site's address is the repository's GitHub Pages address; the landing pa
 - AC-build-and-deploy-7: When the build fails, the Build comment says it failed and links the failed run instead of keeping the last successful numbers.
 - AC-build-and-deploy-8: A push to `main` deploys `dist/` to GitHub Pages with no manual step, and the deployed landing page serves the merged content within 5 minutes of the merge. (verify: workflow)
 - AC-build-and-deploy-9: No workflow step commits or pushes to a pull request branch except the formatting fix of AC-structure-check-27; after any number of automated runs, every commit on a pull request branch is its author's or a `github-actions[bot]` formatting commit carrying a `Nanoif-Format:` trailer. (verify: workflow)
-- AC-build-and-deploy-10: Jobs triggered by a pull request have read-only access to repository contents, except the formatting job, which can push only to the head branch of a pull request from this repository; the main-branch jobs that write `ai/` state push only to `main`. (verify: workflow)
+- AC-build-and-deploy-10: Jobs triggered by a pull request have read-only access to repository contents, except the formatting job, which can push only to the head branch of a pull request from this repository; the jobs that write `ai/` state push only to the `ai-state` branch, and no workflow pushes to `main`. (verify: workflow)
 - AC-build-and-deploy-11: A new push to a pull request cancels that pull request's run in progress, and runs for different pull requests never queue behind each other. (verify: workflow)
 - AC-build-and-deploy-12: The `test` job runs the package tests and lint on every pull request and every push to `main`, and a failure turns its check red. (verify: workflow)
+- AC-build-and-deploy-13: When the saved `ai/` state cannot be fetched from the `ai-state` branch (unreachable, or no `ai/` on it), the `build` check is red, the Build comment says the build did not run and why, and no page is built or deployed; a Story Bible placeholder is never shown in place of saved state that could not be read. (verify: planned)
+- AC-build-and-deploy-14: A pull request against `main` cannot be merged until its `build`, `test` and `intent` checks have passed on its head commit; `Structure`, `format` and the AI checks never block a merge, and no one but the repository admin can push to `main` without a pull request. (verify: planned)
 
 ## Edge cases
 - **Build step fails on writer content** (for example a passage the story format cannot parse):
   the build check is red; the structure notes, which run first, usually say why.
 - **GitHub Actions is down or queued**: the check stays pending; nothing deploys and nothing is
-  reported as passed. Merging while the check is pending is the writer's choice.
+  reported as passed. The Merge button waits until `build`, `test` and `intent` pass
+  (AC-build-and-deploy-14).
 - **The build cannot even check out the story or install its tools** (a GitHub outage): the
   `build` check is red, but the Build comment is not replaced, so the previous push's comment
   stays up, which falls short of AC-build-and-deploy-7; the red `build` check on the new commit
-  is the writer's signal.
+  is the writer's signal, and the pull request cannot be merged until it passes.
+- **The saved `ai/` state cannot be fetched**: every pull request's `build` is red and its Build
+  comment says the build did not run, so merges wait for the organiser; on `main`, the site is
+  not redeployed and the last published site stays live (AC-build-and-deploy-13).
+- **The organiser pushes to `main` directly** (admin bypass): it builds and deploys like a merge,
+  with no preview, no editors' notes and no required checks.
 - **Two merges close together**: deploys run one after another; the later merge is what stays live.
 - **Preview artifact expired** (after 30 days): re-run the workflow from the pull request's
   Checks tab to get a fresh one.

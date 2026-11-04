@@ -37,7 +37,8 @@ against facts established on other branches.
    extraction shown.
 
 **Extraction** runs automatically after each merge to `main` and saves its result to
-`ai/story-bible-cache.json` on `main`. Only passages whose text changed are re-read, and a passage
+`ai/story-bible-cache.json` on the `ai-state` branch, never on `main`; every build reads it from
+there. Only passages whose text changed are re-read, and a passage
 whose exact text its pull request already extracted is not read again; when nothing needs reading,
 no AI is called. Fact ids and entity merges are assigned only here, on `main`: every fact keeps a
 stable id; a fact that is gone is retired and its id is never reused. The page is rendered from
@@ -110,7 +111,7 @@ what would change and what the run cost, or "did not run" with the reason; it co
 - AC-story-bible-26: An `intentional-conflict: c-<id>` line whose id matches no conflict, or a label line whose entity is unknown or has no conflict and no fact with a quote containing the fragment, changes nothing and is listed on the page as `unmatched`.
 - AC-story-bible-27: An `alias:`, `not-entity:` or `pin:` line that names no entity the Bible knows changes nothing and is listed on the page as `unmatched`.
 - AC-story-bible-28: The canon offered for a passage never includes facts, pinned or extracted, drawn from that passage or from a passage whose text changed since the extraction.
-- AC-story-bible-29: Only the extraction job on `main` commits the saved extraction, as a commit of `ai/story-bible-cache.json` alone to `main`; a pull request's extraction commits nothing, and no Story Bible job commits to a pull request branch. (verify: workflow)
+- AC-story-bible-29: Only the extraction job that runs after a merge to `main` commits the saved extraction, as a commit of `ai/story-bible-cache.json` alone to the `ai-state` branch; no Story Bible job commits to `main` or to a pull request branch, and a pull request's extraction commits nothing. (verify: workflow)
 - AC-story-bible-30: When extraction fails or is skipped after a merge, the site still deploys with the latest saved Bible. (verify: workflow)
 - AC-story-bible-31: The `/extract-story-bible` result is one comment per pull request, found by its `<!-- nano:bible -->` marker and edited in place, headed "dry run: nothing was saved" and listing the entities, facts and conflicts that would be added, changed or retired and what the run cost; when the run did not happen or failed, it says "did not run" with the reason and shows no earlier result.
 - AC-story-bible-32: When this month's AI spend has reached the cap, or the extraction's estimate would pass it, extraction makes no model call and saves nothing; a run stopped by the cap part-way saves nothing; and `/extract-story-bible` says "did not run" with the reason of AC-continuity-review-31.
@@ -121,6 +122,9 @@ what would change and what the run cost, or "did not run" with the reason; it co
 
 ## Edge cases
 - **No extraction yet** (a fresh story): the placeholder page; every landing link still works.
+- **Saved state cannot be fetched** (the `ai-state` branch unreachable or empty): the build fails
+  and says it did not run; it never shows the placeholder as if there were no extraction
+  (AC-build-and-deploy-13).
 - **Saved extraction unreadable**: the build fails loudly rather than publishing a placeholder over
   real data (AC-story-bible-2).
 - **Extraction fails after a merge**, or the AI runner is offline: the site deploys with the

@@ -48,7 +48,8 @@ them every day.
 1. Go back to your pull request and wait a few minutes for the notes.
 2. Change anything you agree with by editing the file on your branch. The helpers read it again
    each time.
-3. When you are happy, click **Merge pull request**.
+3. When you are happy, click **Merge pull request**. The button waits until the **build**,
+   **test** and **intent** checks are green.
 
 ## Naming your file and linking it in
 
@@ -101,7 +102,8 @@ all good. A red **build** or **Structure** check means something to fix, and Bui
 what. An editor's check is grey when it has notes for you and red when it could not read some of
 your passages.
 
-**The editors' notes never stop you merging.** They are advice, and you have the final say.
+**The editors' notes never stop you merging.** They are advice, and you have the final say. Only
+a red **build**, **test** or **intent** check stops the Merge button.
 
 **The formatting helper.** When your file has untidy spacing or curly quotes, a helper fixes them
 as a small extra save on your draft, and Build & Structure says so. It never changes your words.
@@ -151,7 +153,8 @@ the page. If a deliberate mystery stays unmatched, add a `pin:` line for the quo
 **A check is red.** Open the Build & Structure note; it says what broke. It is almost always a
 choice pointing at a passage name that doesn't exist, or a passage name someone already used. Fix
 the name and save again. If it says the story build failed, it links the page that shows why; ask
-the organiser if that doesn't help.
+the organiser if that doesn't help. If it says the build did not run, the problem is on the
+organiser's side, not in your writing; ask them, and merge once it is green again.
 
 **My choice is reported as broken.** The name after `->` must match the passage name exactly,
 including capitals and spaces. Also check your file name ends in `.twee`; otherwise the story
@@ -175,9 +178,9 @@ then tidies your file.
 **I want the editors to look again.** Comment `/check-continuity` on your pull request. They also
 look again by themselves every time you save.
 
-**I saved straight into the story instead of a new branch.** Your change went live without
-notes. That's fine; next time choose **Create a new branch**. If something needs undoing, ask the
-organiser.
+**GitHub won't let me save to `main`.** That's on purpose: every change goes through a pull
+request so the helpers can read it first. Choose **Create a new branch for this commit and start
+a pull request**, and carry on from Step 1.
 
 **Anything else.** Ask in a comment on your pull request. The other writers and the organiser
 will see it.
