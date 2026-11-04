@@ -79,7 +79,9 @@ on Oct 25; later fixes to it follow the change windows below.
 
 **Change windows.** A structural change (module boundary, workflow job, persistent state,
 dependency, data contract) lands by Oct 25 or waits for December. Prompt wording, model choice and
-configuration variables may change in November, each with its eval delta.
+configuration variables may change in November, each with its eval delta. One exception may land
+in November: loose ends (the tooling-owned `Unwritten` passage, kept out of the Story Bible and AI
+reads, and the site's Loose ends view).
 
 ## Constraints
 

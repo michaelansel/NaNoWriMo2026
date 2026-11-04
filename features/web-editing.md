@@ -52,8 +52,9 @@ and the story's site, and is also a page on the site ([output-formats](output-fo
 
 - INITIALS are 1 to 10 letters and are the same in the file name and the entry passage.
 - The date is the writing day as year, month, day, and must be a real calendar date.
-- The infrastructure files `Start`, `StoryData`, `StoryTitle`, `StoryStyles` and
-  `PathIdDisplay` keep their own names. There is no other file pattern.
+- The infrastructure files `Start`, `StoryData`, `StoryTitle`, `StoryStyles`, `PathIdDisplay`
+  and `Unwritten` ([loose-ends](loose-ends.md)) keep their own names. There is no other file
+  pattern.
 
 ### Link forms
 Writers may use any of these; every tool reads them the same way:

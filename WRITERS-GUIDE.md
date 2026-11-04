@@ -80,6 +80,16 @@ Morning came up thin and yellow over the reach.
 - You can put several passages in one day's file. Start each with its own `::` line.
 - Do not worry about blank lines or curly quotes. A helper tidies those for you.
 
+## A choice you'll write later
+
+To offer a choice now and write where it leads on another day, point it at `Unwritten`, for
+example `[[Go to the weir->Unwritten]]`. A reader who clicks it is told the path hasn't been
+written yet and can go back. Write `Unwritten` exactly like that, with a capital U.
+
+**Picking one up.** Anyone can, any day: the **Loose ends** list on the **Passages** page shows
+each one and where it is. In Step 1, open that passage and change `Unwritten` in its link to your
+passage's name, for example `[[Go to the weir->Day 5 EV]]`, instead of adding a new choice.
+
 ## The notes you'll see after you save
 
 A few minutes after each save, these notes appear on your pull request. Each one is a single
@@ -157,8 +167,8 @@ the organiser if that doesn't help. If it says the build did not run, the proble
 organiser's side, not in your writing; ask them, and merge once it is green again.
 
 **My choice is reported as broken.** The name after `->` must match the passage name exactly,
-including capitals and spaces. Also check your file name ends in `.twee`; otherwise the story
-can't see the file at all.
+including capitals and spaces; a choice you'll write later points at `Unwritten`, capital U. Also
+check your file name ends in `.twee`; otherwise the story can't see the file at all.
 
 **An editor's note says "AI review unavailable".** The editors couldn't read your passages this
 time. That is not an all-clear, but you can still merge. If it names the monthly AI budget, the
@@ -193,7 +203,7 @@ After each merge, the story's site updates with these pages:
 - **Proofread**: all the text on one page
 - **All paths**: every route through the story
 - **Metrics**: word counts
-- **Passages**: every passage name, its file and its links; handy when you add a choice
+- **Passages**: every passage, its file and links, and the **Loose ends**; handy when you add a choice
 - **Story Bible**: the characters, places and facts (empty until after the first merge)
 - **Graph**: a map of the story
 - **Writer's Guide**: this guide

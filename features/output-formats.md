@@ -52,7 +52,8 @@ min/mean/median/max per file, the longest passages, and a passage-length distrib
 
 **Passages.** One row per passage in file order: name, `file:line`, tags, the writer's initials
 and date from the file name, the day from the `Day <N>` passage, word count, links out, links
-in, and a filter box.
+in, and a filter box. Above the table, a **Loose ends** section lists every choice that points at
+`Unwritten` ([loose-ends](loose-ends.md)).
 
 **Path IDs.** At each ending, the play page shows `Path ID: <8 hex digits>` and the route's
 passage names. The id links to that route's clean text file. The id is derived from the route's

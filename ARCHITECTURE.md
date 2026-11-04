@@ -10,7 +10,7 @@ system as it is; each part links its ADR in [`architecture/`](architecture/). AD
 
 | Component | What it is | Decided in |
 |---|---|---|
-| `src/` | Writer prose `<INITIALS>-<YYYYMMDD>.twee`, tooling-owned `Start.twee` (the opening; its passages are story prose), and infrastructure passages (`StoryData`, `StoryTitle`, `StoryStyles`, `PathIdDisplay`) | [018](architecture/018-structure-check-and-report-only-lint.md), [020](architecture/020-story-bible-v2.md) |
+| `src/` | Writer prose `<INITIALS>-<YYYYMMDD>.twee`, tooling-owned `Start.twee` (the opening; its passages are story prose), and infrastructure passages (`StoryData`, `StoryTitle`, `StoryStyles`, `PathIdDisplay`, and `Unwritten`, the reserved target of a loose-end choice: a real passage, so links to it resolve, but not story prose) | [018](architecture/018-structure-check-and-report-only-lint.md), [020](architecture/020-story-bible-v2.md) |
 | `story-overrides.txt` | Writer-editable Story Bible corrections, syntax-checked on every build | [020](architecture/020-story-bible-v2.md) |
 | `nanoif/` | The one Python package and `nanoif` CLI | [015](architecture/015-nanoif-package.md) |
 | `.github/workflows/` | `build-and-deploy.yml`, `ai-command.yml`, `ai-maintenance.yml`, `intent.yml` | [014](architecture/014-actions-automation-exe-runner.md), [021](architecture/021-intent-gate.md), [025](architecture/025-format-commits-on-pr-branches.md) |
@@ -168,11 +168,11 @@ repository variables `LLM_PROFILE`, `LLM_MODEL`, `LLM_MONTHLY_USD`, `EXE_HEALTH_
 |---|---|
 | `cli.py` | `nanoif` commands; every path derived from `--repo` or an explicit argument |
 | `errors.py` | package error hierarchy (`NanoifError`) |
-| `twee/` | the one header regex (`files`), link parser (`links`), story parser (`parse`), prose, word counts and the one infrastructure-passage rule (`prose.is_infra`), quote verifier (`quotes`), passage hashes, linter (`lint`: reports on `src/`; `--fix` only on named prose files, only whitespace and quotes, checked by an invariant) ([018](architecture/018-structure-check-and-report-only-lint.md), [025](architecture/025-format-commits-on-pr-branches.md)) |
+| `twee/` | the one header regex (`files`), link parser (`links`), story parser (`parse`), prose, word counts and the one infrastructure-passage rule (`prose.is_infra`, which also holds the one `UNWRITTEN` name; structure, Bible, editors and the Loose ends list all read it), quote verifier (`quotes`), passage hashes, linter (`lint`: reports on `src/`; `--fix` only on named prose files, only whitespace and quotes, checked by an invariant) ([018](architecture/018-structure-check-and-report-only-lint.md), [025](architecture/025-format-commits-on-pr-branches.md)) |
 | `graph/` | path enumeration (`paths`), base comparison and categories (`categorize`), passage ids and the path-id lookup (`ids`) |
 | `git/` | the one `git` service: cached, timed, one `git log` per build |
 | `build/` | repository layout (`paths`) and `build core` |
-| `formats/` | `allpaths`, `metrics`, `passages`, `story_bible` pages from core artifacts; `landing`; `guide`, the one Markdown-to-HTML renderer (`markdown-it-py`, raw HTML escaped, [027](architecture/027-writers-guide-page.md)); HTML in `templates/html/` |
+| `formats/` | `allpaths`, `metrics`, `passages` (with the Loose ends list, read from `src/` for link lines), `story_bible` pages from core artifacts; `landing`; `guide`, the one Markdown-to-HTML renderer (`markdown-it-py`, raw HTML escaped, [027](architecture/027-writers-guide-page.md)); HTML in `templates/html/` |
 | `check/` | report-only `structure` checks ([018](architecture/018-structure-check-and-report-only-lint.md)) and the `story-overrides.txt` syntax parser |
 | `schemas/` | artifact schemas and write/read validation |
 | `llm/` | client, profiles, schema parsing, prompt rendering and hashes (`prompts`), pricing, spend ledger (`ledger`), test doubles ([016](architecture/016-llm-client-and-prompt-contract.md), [023](architecture/023-monthly-spend-cap.md)) |

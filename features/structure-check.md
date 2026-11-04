@@ -42,7 +42,8 @@ On every pull request build, before the pages are built, two report-only tools r
 | `dead-end` | info | A reachable passage has no links and is not tagged `ending` |
 
 Passages tagged `footer`, `header`, `startup`, `script` or `stylesheet`, and the `StoryData` and
-`StoryTitle` passages, are page furniture: never orphans or dead ends.
+`StoryTitle` passages, are page furniture: never orphans or dead ends. Neither is `Unwritten`,
+the passage a choice points at until it is written ([loose-ends](loose-ends.md)).
 
 **`nanoif lint src/`**, formatting only, all warnings, eight rules: a space after `::`; a blank
 line after a passage header (not for `StoryData`, scripts or stylesheets); one blank line between
@@ -76,9 +77,9 @@ the run summary and annotations only, and nothing is fixed.
 - AC-structure-check-4: `StoryData` that is not JSON, is not an object, has an IFID that is not a UUID, names a start passage that does not exist, or has an invalid `storyStyle` perspective, tense or protagonist is an error on the `StoryData` line.
 - AC-structure-check-5: A story with no `StoryData` passage is an error, and reachability is then measured from `Start`.
 - AC-structure-check-6: An unknown `storyStyle` key is a warning, and `StoryData` without `storyStyle` is valid.
-- AC-structure-check-7: A passage no route from the start reaches is a warning, including passages reached only through other orphans; page-furniture passages are never reported.
+- AC-structure-check-7: A passage no route from the start reaches is a warning, including passages reached only through other orphans; page-furniture passages and `Unwritten` (AC-loose-ends-3) are never reported.
 - AC-structure-check-8: Reachability is measured from the start passage named in `StoryData`.
-- AC-structure-check-9: A reachable passage with no links is reported as info, unless it is tagged `ending`.
+- AC-structure-check-9: A reachable passage with no links is reported as info, unless it is tagged `ending` or is `Unwritten` (AC-loose-ends-3).
 - AC-structure-check-10: A file whose name breaks the naming rule is a warning; the infrastructure files and the generated `PathIdLookup.twee` are exempt.
 - AC-structure-check-11: A writer's file with no `Day <N> <INITIALS>` passage whose initials match the file name is a warning on that file.
 - AC-structure-check-12: A `.twee` file that is not valid UTF-8 is an error naming the file.
