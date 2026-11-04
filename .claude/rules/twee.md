@@ -5,10 +5,10 @@ paths:
 
 # Twee files
 
-- Prose files are `src/<INITIALS>-<YYYYMMDD>.twee` and belong to writers. Do not open them for editing unless the user named the file. Infra files (`Start`, `StoryData`, `StoryTitle`, `StoryStyles`, `PathIdDisplay`) are yours. `Start.twee` is tooling-owned but its passage is story prose: the Story Bible and the editors read it.
+- Prose files are `src/<INITIALS>-<YYYYMMDD>.twee` and belong to writers. Do not open them for editing unless the user named the file. Infra files (`Start`, `StoryData`, `StoryTitle`, `StoryStyles`, `PathIdDisplay`, `Unwritten`) are yours. `Start.twee` is tooling-owned but its passage is story prose: the Story Bible and the editors read it. `Unwritten.twee` is not story prose (it is in `is_infra`); it must contain no `[[...]]` link or goto macro, only `(link-undo:)`.
 - `src/PathIdLookup.twee` is generated at build time and gitignored; never write it by hand.
 - Entry passage of a prose file is `:: Day <N> <INITIALS>`; other passage names are natural language. `nanoif check structure` reports naming drift.
-- Links: `[[Text->Target]]`, `[[Target]]`, or `(link-goto:)`; the target is the rightmost `->`. Every target must exist; broken links fail the Structure check.
+- Links: `[[Text->Target]]`, `[[Target]]`, or `(link-goto:)`; the target is the rightmost `->`. Every target must exist; broken links fail the Structure check. `Unwritten` is the one reserved link target for an unwritten choice (exact case).
 - Formatting rules `nanoif lint` reports (the CI `format` job fixes them in a PR's changed prose files): space after `::` in headers; one blank line after a header (except `StoryData`, `StoryTitle`, `StoryStylesheet`, `StoryBanner`, `StoryMenu`, `StoryInit`, and `[stylesheet]`/`[script]` passages); exactly one blank line before a header; no trailing whitespace; file ends with exactly one newline; no consecutive blank lines; blank line before and after a link block, none between links.
 - Curly quotes in prose become ASCII (`smart-quotes`); headers, links, macros, HTML tags and special passages are never touched.
 - `StoryData` holds the IFID (uppercase UUIDv4, never reuse a previous year's), `format-version` pinned to what the bundled tweego ships, and `storyStyle` (`perspective`, `protagonist`, `tense`) that the Style Editor reads.
