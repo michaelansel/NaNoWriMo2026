@@ -14,11 +14,11 @@ https://michaelansel.github.io/NaNoWriMo2026/
 
 ## Before Nov 1
 
-- [ ] `src/StoryTitle.twee`: the story's title (it also titles the landing page)
-- [ ] `src/StoryData.twee` `storyStyle`: `perspective`, `protagonist` and `tense`
-      (the Style Editor stays off, and says so, until they are set)
-- [ ] `src/Start.twee`: the opening passage, linking to the first day's passage
-- [ ] Writers added as collaborators, so their `/check-continuity` comments count
+- [x] `src/StoryTitle.twee`: the story's title (it also titles the landing page)
+- [x] `src/StoryData.twee` `storyStyle`: `perspective` and `tense` (the Style Editor stays off,
+      and says so, until one is set); `protagonist` is optional and adds a name-spelling check
+- [x] `src/Start.twee`: the opening passage, linking to the first day's passage
+- [x] Writers added as collaborators, so their `/check-continuity` comments count
 - [ ] `/nov1-checklist` prints `READY`
 
 ## What runs automatically
