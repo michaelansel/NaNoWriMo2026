@@ -371,8 +371,8 @@
     }
   },
   "extraction": {
-    "commit": "4c1a3f2b6b6d06a403989b9e49ee3519ff982f9a",
-    "extracted_at": "2026-11-04T03:36:59Z",
+    "commit": "676a9f106a8be0196e2225fc63c2f13a18da139b",
+    "extracted_at": "2026-11-04T12:20:32Z",
     "mode": "incremental",
     "model": "fireworks/glm-5p3-flash",
     "profile": "exe",
@@ -381,7 +381,7 @@
       "bible_reconcile": "e03107818f6a",
       "bible_resolve": "07a2de1d4ebe"
     },
-    "usd": 0.002532,
+    "usd": 0.00025,
     "usd_known": true
   },
   "passages": {
@@ -538,7 +538,7 @@
       "summary": "Devna Sorrel and Myor Ackeray, led by Jackson, become the first travelers through their portal, arriving in a dark, humid giant forest where they find magic works, their gear functions, and a maintained dirt road runs nearby."
     },
     "Start": {
-      "content_hash": "844ebd02d1d12782",
+      "content_hash": "d22f6f8cb58fc604",
       "dropped": {
         "generic_entity": 0,
         "state": 0,
@@ -548,7 +548,7 @@
       "file": "src/Start.twee",
       "mentions": [],
       "references": [],
-      "summary": "A stub passage that links to Day 1 KEB."
+      "summary": "A bare start page with a link to Day 3 KEB; no entities or facts are established."
     }
   },
   "resolution": {
