@@ -26,6 +26,18 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Check that the ai/ state was fetched
+      # ai/ (the saved Story Bible cache) comes from the ai-state branch through
+      # .github/actions/ai-state (ADR-028). Without it the build would render the
+      # placeholder Bible as if nothing had been saved, so a forgotten fetch fails here.
+      # This checks that the fetch ran, not that a cache exists: a new season has none.
+      shell: bash
+      run: |
+        if [ ! -L ai ] || [ ! -d .ai-state/ai ]; then
+          echo "::error::ai/ is not linked from the ai-state branch; run .github/actions/ai-state after the checkout (ADR-028)"
+          exit 1
+        fi
+
     - name: Set up Python
       if: inputs.install-python == 'true'
       uses: actions/setup-python@v7

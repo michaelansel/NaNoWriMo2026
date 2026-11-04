@@ -14,6 +14,7 @@ Two rules override everything else here:
 pip install -e ".[dev]"                   # package + pytest + ruff
 pytest                                    # all tests (CI required check)
 ruff check nanoif tests                   # lint, E722 (bare except) is an error
+scripts/ai-state.sh fetch                 # link ai/ from the ai-state branch (once per clone; ADR-028)
 nanoif build all --repo .                 # dist/ artifacts: allpaths, metrics, story bible, passages
 nanoif check structure src/               # broken links, duplicates, orphans, naming drift (report-only)
 nanoif lint src/                          # twee formatting (report-only here; --fix runs only in the CI format job)
@@ -32,7 +33,7 @@ Inference env: `NANOIF_LLM_PROFILE` (`exe` default and the CI default, `firework
 ```
 src/                 writer prose + infra files (StoryData, StoryTitle, StoryStyles, PathIdDisplay; Start is tooling-owned prose)
 story-overrides.txt  writer-editable bible overrides (alias / not-entity / pin / intentional-conflict)
-ai/                  state written only by Actions on main: story-bible-cache.json, dismissals.jsonl, outcomes.jsonl
+ai/                  `ai/` lives on the `ai-state` branch, written only by Actions; `scripts/ai-state.sh fetch` links it in
 nanoif/              the package: twee/ graph/ git/ llm/ bible/ review/ check/ formats/ prompts/ schemas/ templates/ cli.py
 tests/               pytest; fixtures/eval-story is the canonical test story with truth.json; eval/baselines/<profile>.json
 .github/workflows/   build-and-deploy.yml, ai-command.yml, ai-maintenance.yml
@@ -55,11 +56,11 @@ dist/                build output, never committed
 
 - No automation commits to a PR branch except the `format` job, which pushes at most one
   whitespace-and-quotes commit to a same-repo PR's changed prose files (ADR-025). Only `bible-extract`
-  and `/dismiss` have `contents: write` on `main`, and only for `ai/`.
+  and `/dismiss` have `contents: write`, only to push `ai/` to `ai-state`.
 - No paid inference from an unauthenticated trigger: slash commands are `author_association`-gated.
 - No `|| true`, `exit 0`, or `continue-on-error` that hides a failure; every failure has a visible check or comment.
 - One sticky comment per check type per PR, found by its HTML marker, never by footer text.
-- Never delete or rewrite `ai/*` state locally; it is produced by Actions on main.
+- Never delete or rewrite `ai/*` state locally; it is produced by Actions on `ai-state`; never push to `ai-state` by hand.
 
 ## Intent is owned and traceable
 

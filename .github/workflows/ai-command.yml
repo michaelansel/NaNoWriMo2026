@@ -3,9 +3,10 @@ name: AI commands
 # Slash commands in pull-request comments, collaborators only:
 #   /check-continuity [all] [passage=<name>]   re-run the AI editors
 #   /extract-story-bible                        Story Bible dry run of the PR merged with main
-#   /dismiss f-xxxxxxxx [reason]                record a dismissal on main, re-render comments
+#   /dismiss f-xxxxxxxx [reason]                record a dismissal on ai-state, re-render comments
 # Anything else is ignored. This workflow always runs from the default branch; pull-request
-# code only ever runs in the `build` job, whose token is read-only.
+# code only ever runs in the `build` job, whose token is read-only. Every job that reads or
+# writes ai/ links it from the ai-state branch with .github/actions/ai-state (ADR-028).
 
 on:
   issue_comment:
@@ -145,6 +146,20 @@ jobs:
         with:
           ref: refs/pull/${{ needs.parse.outputs.pr }}/head
           fetch-depth: 0
+      # The ai/ link comes from the default branch's copy of the action and script: a pull
+      # request branch made before ADR-028 has neither (and may still track ai/, which the
+      # link replaces in this workspace).
+      - name: The ai/ state tooling (default branch)
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          path: .default
+          sparse-checkout: |
+            .github
+            scripts
+          persist-credentials: false
+      - name: Link ai/ from the ai-state branch
+        uses: ./.default/.github/actions/ai-state
       - uses: ./.github/actions/build-story
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -201,6 +216,8 @@ jobs:
       # Tooling from the default branch; only the story data comes from the pull request,
       # so no pull-request code runs with this job's write token.
       - uses: actions/checkout@v7
+      - name: Link ai/ from the ai-state branch
+        uses: ./.github/actions/ai-state
       - name: Take the story files from the pull request
         run: |
           git fetch --no-tags --depth=1 origin "+refs/pull/${PR_NUMBER}/head:refs/remotes/pr/head"
@@ -213,7 +230,10 @@ jobs:
       # for it: the "running" comments state the estimate, the finished ones show it beside
       # the actual cost, and an estimate that does not fit starts no review
       # (AC-continuity-review-11, AC-continuity-review-35). Other modes are unchanged.
-      - uses: ./.github/actions/ai-review
+      # !cancelled(): after a failed ai/ fetch the action still replaces the editor comments
+      # with "did not run" and fails (ADR-028).
+      - if: ${{ !cancelled() }}
+        uses: ./.github/actions/ai-review
         with:
           runner: ${{ needs.probe.outputs.runner }}
           unavailable-reason: ${{ needs.probe.outputs.reason }}
@@ -267,7 +287,7 @@ jobs:
           if [ "$BUILD_RESULT" != success ]; then
             reason="the build failed, so there was nothing to review; the build log in this run says why"
           else
-            reason="the AI runner is not set up correctly (${PROBE_REASON:-see the probe job's log}); ask whoever looks after the repository to fix it"
+            reason="the AI runner is not set up correctly (${PROBE_REASON:-see the log of the probe job}); ask whoever looks after the repository to fix it"
           fi
           nanoif github not-run --pr "$PR_NUMBER" --head-sha "$HEAD_SHA" --reason "$reason"
           echo "::error::AI review did not run: $reason"
@@ -300,9 +320,10 @@ jobs:
       NANOIF_LLM_PROFILE: ${{ vars.LLM_PROFILE || 'exe' }}
       NANOIF_LLM_MODEL: ${{ vars.LLM_MODEL }}
     steps:
-      # Tooling from the default branch; only the story data (src/, story-overrides.txt and
-      # main's saved cache, as the merge ref carries them) comes from the pull request, so no
-      # pull-request code runs with this job's token (contents: read).
+      # Tooling from the default branch; only the story data (src/ and story-overrides.txt,
+      # as the merge ref carries them) comes from the pull request, so no pull-request code
+      # runs with this job's token (contents: read). The saved cache is the newest on the
+      # ai-state branch (ADR-028).
       - uses: actions/checkout@v7
       - name: Python venv (exe runner)
         if: env.RUNNER_KIND == 'exe'
@@ -321,25 +342,27 @@ jobs:
         if: env.RUNNER_KIND != 'exe'
         run: |
           if [ "$RUNNER_KIND" = none ]; then
-            reason="the AI runner is not set up correctly (${PROBE_REASON:-see the probe job's log}); ask whoever looks after the repository to fix it"
+            reason="the AI runner is not set up correctly (${PROBE_REASON:-see the log of the probe job}); ask whoever looks after the repository to fix it"
           else
             reason="${PROBE_REASON:-the exe runner is not available}"
           fi
           nanoif github bible-report --pr "$PR_NUMBER" --reason "$reason"
           echo "::error::/extract-story-bible did not run: $reason"
           exit 1
+      - name: Link ai/ from the ai-state branch
+        id: ai-state
+        if: env.RUNNER_KIND == 'exe'
+        uses: ./.github/actions/ai-state
       - name: Take the story files from the pull request merged with main
         id: merge
         if: env.RUNNER_KIND == 'exe'
         run: |
           git fetch --no-tags --depth=1 origin "+refs/pull/${PR_NUMBER}/merge:refs/remotes/pr/merge"
-          rm -rf src ai/story-bible-cache.json story-overrides.txt
+          rm -rf src story-overrides.txt
           git checkout refs/remotes/pr/merge -- src
-          for path in story-overrides.txt ai/story-bible-cache.json; do
-            if git cat-file -e "refs/remotes/pr/merge:$path" 2>/dev/null; then
-              git checkout refs/remotes/pr/merge -- "$path"
-            fi
-          done
+          if git cat-file -e "refs/remotes/pr/merge:story-overrides.txt" 2>/dev/null; then
+            git checkout refs/remotes/pr/merge -- story-overrides.txt
+          fi
       - name: Dry-run the extraction
         id: extract
         if: env.RUNNER_KIND == 'exe'
@@ -357,9 +380,13 @@ jobs:
         if: ${{ !cancelled() && env.RUNNER_KIND == 'exe' }}
         env:
           CODE: ${{ steps.extract.outputs.exit_code }}
+          AI_STATE: ${{ steps.ai-state.outcome }}
           MERGE: ${{ steps.merge.outcome }}
         run: |
-          if [ "$MERGE" != success ]; then
+          if [ "$AI_STATE" != success ]; then
+            CODE="${CODE:-1}"
+            nanoif github bible-report --pr "$PR_NUMBER" --reason "the saved Story Bible could not be read from the ai-state branch; ask the organiser, then comment again"
+          elif [ "$MERGE" != success ]; then
             CODE="${CODE:-1}"
             nanoif github bible-report --pr "$PR_NUMBER" --reason "could not merge the pull request with main; resolve its conflicts, then comment again"
           elif [ -f "$RUNNER_TEMP/bible-diff.json" ] && { [ "$CODE" = 0 ] || [ "$CODE" = 3 ]; }; then
@@ -380,12 +407,12 @@ jobs:
     if: needs.parse.outputs.command == 'dismiss' && needs.parse.outputs.error == ''
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # One writer of ai/ on main at a time; never cancelled.
+    # One /dismiss writer of ai/ on ai-state at a time; never cancelled.
     concurrency:
       group: ai-state-main
       cancel-in-progress: false
     permissions:
-      contents: write # append ai/dismissals.jsonl on the default branch only
+      contents: write # push ai/dismissals.jsonl to the ai-state branch only (ADR-028)
       pull-requests: write
       checks: write
       actions: read # find and download the PR's last ai-review artifact
@@ -397,11 +424,13 @@ jobs:
       REASON: ${{ needs.parse.outputs.reason }}
       ACTOR: ${{ needs.parse.outputs.actor }}
       HEAD_SHA: ${{ needs.parse.outputs.head_sha }}
-      DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
     steps:
       - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.repository.default_branch }}
+      - name: Link ai/ from the ai-state branch
+        id: ai-state
+        uses: ./.github/actions/ai-state
       - uses: actions/setup-python@v7
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -433,18 +462,10 @@ jobs:
           nanoif github dismiss --key "$KEY" --by "$ACTOR" --pr "$PR_NUMBER" \
             --reason "$REASON" --review "$REVIEW" --out ai/dismissals.jsonl
 
-      - name: Commit to the default branch
+      - name: Save to the ai-state branch
         id: commit
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add ai/dismissals.jsonl
-          git commit -m "chore: record dismissal of ${KEY} from PR #${PR_NUMBER}"
-          if ! git push origin "HEAD:${DEFAULT_BRANCH}"; then
-            echo "Push rejected; rebasing once onto the new ${DEFAULT_BRANCH}"
-            git pull --rebase origin "$DEFAULT_BRANCH"
-            git push origin "HEAD:${DEFAULT_BRANCH}"
-          fi
+          scripts/ai-state.sh push "chore: record dismissal of ${KEY} from PR #${PR_NUMBER}" ai/dismissals.jsonl
 
       # Only a review of the current head is re-rendered (ADR-022): after a newer push, or a
       # "did not run" notice, the stored review is an older commit's and would pose as current.
@@ -472,7 +493,7 @@ jobs:
             "Could not dismiss \`${KEY}\`: no review result for this pull request is available, or the key is not in it. Nothing was recorded. Run \`/check-continuity\`, then \`/dismiss\` again."
 
       - name: Reply when the dismissal could not be saved
-        if: failure() && steps.commit.outcome == 'failure'
+        if: failure() && (steps.commit.outcome == 'failure' || steps.ai-state.outcome == 'failure')
         run: |
           gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body \
             "Could not dismiss \`${KEY}\`: saving it to the story failed, so nothing was recorded. Try \`/dismiss\` again later; if it fails again, ask the organiser."

@@ -151,6 +151,8 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
+      - name: Link ai/ from the ai-state branch
+        uses: ./.github/actions/ai-state
       - uses: ./.github/actions/build-story
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -176,6 +178,8 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
+      - name: Link ai/ from the ai-state branch
+        uses: ./.github/actions/ai-state
       - uses: ./.github/actions/ai-review
         with:
           runner: ${{ needs.probe.outputs.runner }}

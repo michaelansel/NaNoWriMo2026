@@ -10,7 +10,7 @@ Work through the steps in order. Before each step marked **destructive**, show e
 
 ## 1. Retro (before anything is deleted)
 
-- Read `ai/outcomes.jsonl` and summarize: findings total, dismissed, fixed, ignored-at-merge; false-positive proxy.
+- Run `scripts/ai-state.sh fetch` (it links `ai/` from the `ai-state` branch), then read `ai/outcomes.jsonl` and summarize: findings total, dismissed, fixed, ignored-at-merge; false-positive proxy.
 - List every skill, agent, rule, and workflow task, and whether it was used this season (`git log`, `gh run list`). Propose retiring the unused ones.
 - Write the retro as a short section in `PRIORITIES.md` under the new year's heading. This is the only place last year's numbers live.
 
@@ -23,7 +23,7 @@ Work through the steps in order. Before each step marked **destructive**, show e
 
 ## 3. State reset (**destructive**)
 
-- Delete `ai/story-bible-cache.json`; truncate `ai/dismissals.jsonl` and `ai/outcomes.jsonl` to empty; reset `story-overrides.txt` to its comment header.
+- `ai/` lives on the `ai-state` branch (ADR-028), which only Actions pushes to and whose ruleset blocks force-pushes. The admin resets it: a new commit on `ai-state` that deletes `ai/story-bible-cache.json` and leaves `ai/dismissals.jsonl` and `ai/outcomes.jsonl` empty (keep `ai/` itself, or every fetch fails), made with no workflow run or `/dismiss` in flight. Reset `story-overrides.txt` to its comment header in the reset PR.
 - Confirm no other cache or generated file is tracked: `git ls-files | grep -Ei 'cache|status|Resource'`.
 - On the exe runner VM, delete the Story Bible extraction store, `~/.local/state/nanoif/extract-store/` (ADR-026, `docs/exe-runner.md`); the next extraction recreates it.
 

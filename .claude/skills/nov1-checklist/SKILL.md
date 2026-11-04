@@ -17,8 +17,8 @@ Run every check, then print one table: check, pass/fail, evidence (a command out
 | StoryData is filled | `src/StoryData.twee` has a fresh uppercase UUIDv4 IFID, a pinned `format-version`, and `storyStyle` with `perspective`, `protagonist`, `tense` set (no placeholders) |
 | StoryTitle is set | `src/StoryTitle.twee` is not the placeholder text |
 | `src/` holds only infra files | exactly `Start`, `StoryData`, `StoryTitle`, `StoryStyles`, `PathIdDisplay` plus zero or more `<INITIALS>-<YYYYMMDD>.twee` |
-| No caches tracked | `git ls-files` shows no `allpaths-validation-status.json`, no `Resource-Passage Names`, and `ai/story-bible-cache.json` only if written by Actions |
-| `ai/` state exists | `ai/dismissals.jsonl`, `ai/outcomes.jsonl`, and `story-overrides.txt` exist (may be empty) |
+| No caches tracked | `git ls-files` shows no `allpaths-validation-status.json`, no `Resource-Passage Names`, and nothing under `ai/` (it lives on the `ai-state` branch) |
+| `ai/` state exists | `git ls-tree --name-only origin/ai-state ai/` lists `dismissals.jsonl` and `outcomes.jsonl` (may be empty), and `story-overrides.txt` exists on `main` |
 | No previous-year names | `git grep -n` for the retired writers' initials, character names, and last year's dates returns nothing outside `architecture/` |
 | Structure check clean | `nanoif check src/` reports no broken links, duplicates, or naming drift |
 | Tests green | `pytest -q` passes |

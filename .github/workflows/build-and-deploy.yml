@@ -6,9 +6,10 @@ name: Build and deploy
 # When format pushes its one formatting commit to a same-repository pull request branch,
 # this run stops before build and the dispatched run (input `pr`) builds the new head;
 # every pull request job takes its pull request from `context`, never from the event.
-# Main: test, build, probe, Story Bible extraction (exe runner; commits only
-# ai/story-bible-cache.json to main), then deploy to Pages with the Bible re-rendered
-# from the newest cache.
+# Main: test, build, probe, Story Bible extraction (exe runner; pushes only
+# ai/story-bible-cache.json to the ai-state branch), then deploy to Pages with the Bible
+# re-rendered from the newest cache. Every job that reads or writes ai/ links it from the
+# ai-state branch with .github/actions/ai-state right after its checkout (ADR-028).
 
 on:
   pull_request:
@@ -460,6 +461,12 @@ jobs:
       - name: Install package
         run: python -m pip install -e ".[dev]"
 
+      - name: Link ai/ from the ai-state branch
+        # Before anything reads ai/ (ADR-028). When the branch cannot be fetched this fails,
+        # the steps below are skipped, and the Build comment says the build failed before
+        # the structure check could run, so the pull request's build is red.
+        uses: ./.github/actions/ai-state
+
       - name: Lint twee formatting (report-only)
         # Issues become warning annotations and a step-summary line; this step edits nothing
         # (the format job fixes prose files, ADR-025). --exit-zero keeps issues from failing
@@ -577,7 +584,13 @@ jobs:
           # The merge commit context checked (a dispatched run's second parent is its head).
           ref: ${{ needs.context.outputs.merge_sha }}
           persist-credentials: false
-      - uses: ./.github/actions/ai-review
+      - name: Link ai/ from the ai-state branch
+        id: ai-state
+        uses: ./.github/actions/ai-state
+      # !cancelled(): after a failed ai/ fetch the action still replaces the editor comments
+      # with "did not run" and fails (ADR-028).
+      - if: ${{ !cancelled() }}
+        uses: ./.github/actions/ai-review
         with:
           runner: ${{ needs.probe.outputs.runner }}
           unavailable-reason: ${{ needs.probe.outputs.reason }}
@@ -593,8 +606,9 @@ jobs:
       # first claim on the runner and on the monthly budget. Its result is the
       # <!-- nano:bible --> comment and the "Story Bible preview" check run on this head;
       # a preview failure is never a review failure. Tooling comes from the default branch,
-      # in its own venv; src/, story-overrides.txt and ai/story-bible-cache.json are the
-      # merge commit's, checked out above. It commits nothing and never builds canon-pack.json.
+      # in its own venv; src/ and story-overrides.txt are the merge commit's, checked out
+      # above, and ai/story-bible-cache.json is the newest on the ai-state branch, linked
+      # above (ADR-028). It commits nothing and never builds canon-pack.json.
       # In a dispatched run the context job already waited (5 x 10 s) for the merge commit
       # whose second parent is this head; the check below re-reads the checked-out commit.
       - name: Story Bible preview tooling (default branch)
@@ -626,7 +640,7 @@ jobs:
 
       - name: Extract this pull request's passages for the preview
         id: bible-extract
-        if: ${{ !cancelled() && steps.bible-merge.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.bible-merge.outcome == 'success' && steps.ai-state.outcome == 'success' }}
         timeout-minutes: 10
         env:
           NANOIF_LLM_PROFILE: ${{ vars.LLM_PROFILE || 'exe' }}
@@ -651,12 +665,15 @@ jobs:
         id: bible-why
         if: ${{ !cancelled() && env.RUNNER_KIND == 'exe' }}
         env:
+          AI_STATE: ${{ steps.ai-state.outcome }}
           INSTALL: ${{ steps.bible-install.outcome }}
           MERGE: ${{ steps.bible-merge.outcome }}
           CODE: ${{ steps.bible-extract.outputs.exit_code }}
         run: |
           reason=""
-          if [ "$INSTALL" != success ]; then
+          if [ "$AI_STATE" != success ]; then
+            reason="the saved Story Bible could not be read from the ai-state branch; the job log says why"
+          elif [ "$INSTALL" != success ]; then
             reason="the default branch's Story Bible tooling could not be installed; the job log says why"
           elif [ "$MERGE" != success ]; then
             reason="the merge commit this job checked out is not this push's; push again to retry"
@@ -773,7 +790,7 @@ jobs:
           if [ "$BUILD_RESULT" != success ]; then
             reason="the build failed, so there was nothing to review; the Build & Structure comment says why"
           else
-            reason="the AI runner is not set up correctly (${PROBE_REASON:-see the probe job's log}); ask whoever looks after the repository to fix it"
+            reason="the AI runner is not set up correctly (${PROBE_REASON:-see the log of the probe job}); ask whoever looks after the repository to fix it"
           fi
           nanoif github not-run --pr "$PR_NUMBER" --head-sha "$HEAD_SHA" --reason "$reason"
           # The Story Bible preview did not run either: replace the previous push's (ADR-026).
@@ -784,8 +801,9 @@ jobs:
   bible-extract:
     # Story Bible extraction after a push or dispatch on main (ADR-020); never on a pull
     # request. It runs inside the workflow's `pages` concurrency group, so two runs on main
-    # never extract at once, and it is the only job here that may write to main: it commits
-    # ai/story-bible-cache.json alone. The deploy job re-renders the Bible from its result.
+    # never extract at once, and it is the only job here with contents: write: it pushes
+    # ai/story-bible-cache.json alone, to the ai-state branch (ADR-028), never to main. The
+    # deploy job re-renders the Bible from its result.
     # Explicit results with !cancelled(): build runs after a skipped format job, and a plain
     # needs would skip this job with it. Never for a dispatched pull request rebuild.
     name: bible-extract
@@ -796,7 +814,7 @@ jobs:
     runs-on: ${{ needs.probe.outputs.runner == 'exe' && fromJSON('["self-hosted","exe"]') || 'ubuntu-latest' }}
     timeout-minutes: 45
     permissions:
-      contents: write # commit ai/story-bible-cache.json to main
+      contents: write # push ai/story-bible-cache.json to the ai-state branch (ADR-028)
     env:
       NANOIF_LLM_PROFILE: ${{ vars.LLM_PROFILE || 'exe' }}
       NANOIF_LLM_MODEL: ${{ vars.LLM_MODEL }}
@@ -817,9 +835,12 @@ jobs:
       - uses: actions/checkout@v7
         if: needs.probe.outputs.runner == 'exe'
         with:
-          # The newest main, so the extraction starts from any cache committed since this
-          # run's commit (a push starts no workflow when made with GITHUB_TOKEN).
+          # The newest main's passages; the cache is the newest on ai-state, linked below.
           ref: main
+
+      - name: Link ai/ from the ai-state branch
+        if: needs.probe.outputs.runner == 'exe'
+        uses: ./.github/actions/ai-state
 
       - name: Python venv (exe runner)
         if: needs.probe.outputs.runner == 'exe'
@@ -855,24 +876,14 @@ jobs:
             exit "$code"
           fi
 
-      - name: Commit the cache to main
+      - name: Push the cache to the ai-state branch
+        # Unchanged: says so and pushes nothing. A push rejected twice fails the job.
         if: steps.extract.outputs.exit_code == '0' || steps.extract.outputs.exit_code == '3'
         run: |
           if [ ! -f ai/story-bible-cache.json ]; then
-            echo "No Story Bible cache was written; nothing to commit." >> "$GITHUB_STEP_SUMMARY"
-          elif git diff --quiet HEAD -- ai/story-bible-cache.json && git ls-files --error-unmatch ai/story-bible-cache.json > /dev/null 2>&1; then
-            echo "Story Bible cache unchanged; nothing to commit." >> "$GITHUB_STEP_SUMMARY"
+            echo "No Story Bible cache was written; nothing to push." >> "$GITHUB_STEP_SUMMARY"
           else
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add ai/story-bible-cache.json
-            git commit -m "chore: update story bible cache"
-            if ! git push origin HEAD:main; then
-              echo "Push rejected; rebasing once onto the new main"
-              git pull --rebase origin main
-              git push origin HEAD:main
-            fi
-            echo "Committed ai/story-bible-cache.json to main." >> "$GITHUB_STEP_SUMMARY"
+            scripts/ai-state.sh push "chore: update story bible cache" ai/story-bible-cache.json
           fi
 
       - name: Upload the cache for the deploy
@@ -880,7 +891,8 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: bible-cache
-          path: ai/story-bible-cache.json
+          # The worktree path, not the ai/ link.
+          path: .ai-state/ai/story-bible-cache.json
           if-no-files-found: ignore
           retention-days: 7
 
@@ -893,8 +905,8 @@ jobs:
   deploy:
     # Runs when the build succeeded, whatever the extraction did (AC-story-bible-18): the
     # Story Bible and the canon pack are re-rendered from the newest cache (the bible-cache
-    # artifact when extraction saved one, else the cache at this commit) and the page says
-    # when the latest extraction did not complete.
+    # artifact when extraction saved one, else the newest on the ai-state branch, ADR-028)
+    # and the page says when the latest extraction did not complete.
     name: deploy
     needs: [build, bible-extract]
     if: ${{ always() && needs.build.result == 'success' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && !inputs.pr }}
@@ -920,13 +932,28 @@ jobs:
           path: repo
           persist-credentials: false
       - name: Download the extracted cache, if any
-        # A pattern that matches nothing downloads nothing; the next step says which cache
+        # A pattern that matches nothing downloads nothing; the next steps say which cache
         # the page is built from.
         uses: actions/download-artifact@v8
         with:
           pattern: bible-cache
           merge-multiple: true
           path: ${{ runner.temp }}/bible-cache
+      - name: Find the extracted cache
+        id: cached
+        run: |
+          if [ -f "$RUNNER_TEMP/bible-cache/story-bible-cache.json" ]; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Link ai/ from the ai-state branch
+        # No cache from this run's extraction: the newest saved one. A failed fetch fails
+        # the deploy rather than publishing an empty Bible.
+        if: steps.cached.outputs.found != 'true'
+        uses: ./repo/.github/actions/ai-state
+        with:
+          repo: repo
       - uses: actions/setup-python@v7
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -935,13 +962,15 @@ jobs:
       - name: Install nanoif
         run: python -m pip install -e repo
       - name: Re-render the Story Bible and the canon pack
+        env:
+          FOUND: ${{ steps.cached.outputs.found }}
         run: |
-          if [ -f "$RUNNER_TEMP/bible-cache/story-bible-cache.json" ]; then
+          if [ "$FOUND" = true ]; then
             mkdir -p repo/ai
             cp "$RUNNER_TEMP/bible-cache/story-bible-cache.json" repo/ai/story-bible-cache.json
             echo "Story Bible: rendered from the cache this run's extraction saved." >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "Story Bible: rendered from the cache at ${GITHUB_SHA::8} (latest extraction: $EXTRACTION_RESULT)." >> "$GITHUB_STEP_SUMMARY"
+            echo "Story Bible: rendered from the newest cache on ai-state (latest extraction: $EXTRACTION_RESULT)." >> "$GITHUB_STEP_SUMMARY"
           fi
           nanoif build story-bible --repo repo --artifacts site/lib/artifacts --out site/dist \
             --extraction-result "$EXTRACTION_RESULT"

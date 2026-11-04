@@ -1,0 +1,23 @@
+name: AI state
+description: >-
+  Link ai/ (Story Bible cache, dismissals, outcomes) into a checkout from the ai-state
+  branch (ADR-028): runs `scripts/ai-state.sh fetch` from the copy of the repository this
+  action was taken from. Fails with ::error:: when the branch cannot be fetched or has no
+  ai/. Every job that reads or writes ai/ uses it right after its checkout; a job whose
+  checkout is pull-request code takes it from a default-branch copy instead.
+
+inputs:
+  repo:
+    description: The checkout to link ai/ into (relative to the workspace or absolute).
+    default: "."
+
+runs:
+  using: composite
+  steps:
+    - name: Fetch the ai/ state
+      shell: bash
+      env:
+        REPO: ${{ inputs.repo }}
+        # The script beside this action, so a default-branch copy runs its own script.
+        SCRIPT: ${{ github.action_path }}/../../../scripts/ai-state.sh
+      run: bash "$SCRIPT" --repo "$REPO" fetch

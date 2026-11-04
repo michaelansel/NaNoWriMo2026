@@ -38,3 +38,7 @@ tmp/
 .pytest_cache/
 .ruff_cache/
 build/
+
+# Actions-written state: lives on the ai-state branch, linked in by scripts/ai-state.sh fetch (ADR-028)
+/ai/
+/.ai-state/

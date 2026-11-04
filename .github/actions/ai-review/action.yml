@@ -2,8 +2,10 @@ name: AI review
 description: >-
   Run the Continuity and Style editors on the exe runner and publish the result, or, when
   the probe chose "hosted", publish "AI review unavailable" and fail. Expects the repository
-  checked out and a story-preview artifact (dist/, lib/artifacts/) in this workflow run.
-  The job must export GITHUB_TOKEN for the GitHub calls.
+  checked out with ai/ linked from the ai-state branch (.github/actions/ai-state, ADR-028)
+  and a story-preview artifact (dist/, lib/artifacts/) in this workflow run. The job must
+  export GITHUB_TOKEN for the GitHub calls. Call it with `if: !cancelled()`: when the
+  ai/ fetch failed it still says so on the pull request ("did not run") and fails.
 
 inputs:
   runner:
@@ -47,7 +49,7 @@ runs:
   using: composite
   steps:
     - name: Python venv (exe runner)
-      if: inputs.runner == 'exe'
+      if: ${{ !cancelled() && inputs.runner == 'exe' }}
       shell: bash
       run: |
         # actions/setup-python needs a hosted-style tool cache; the VM's python3 (3.12)
@@ -56,18 +58,41 @@ runs:
         echo "$RUNNER_TEMP/venv/bin" >> "$GITHUB_PATH"
 
     - name: Set up Python (hosted)
-      if: inputs.runner != 'exe'
+      if: ${{ !cancelled() && inputs.runner != 'exe' }}
       uses: actions/setup-python@v7
       with:
         python-version: ${{ inputs.python-version }}
         cache: pip
 
     - name: Install nanoif
+      if: ${{ !cancelled() }}
       shell: bash
       run: python -m pip install -e .
 
+    - name: Check that the ai/ state was fetched
+      # The review reads ai/dismissals.jsonl and the canon pack built from the saved Story
+      # Bible, both from the ai-state branch (ADR-028). Without that fetch dismissed findings
+      # would come back and the canon pack would be empty, so nothing is reviewed and the
+      # pull request's editor comments and checks say the review did not run. This checks
+      # that the fetch ran, not that the files exist: a new season has none.
+      if: ${{ !cancelled() && inputs.runner == 'exe' }}
+      shell: bash
+      env:
+        PR: ${{ inputs.pr }}
+        HEAD_SHA: ${{ inputs.head-sha }}
+      run: |
+        if [ ! -L ai ] || [ ! -d .ai-state/ai ]; then
+          reason="the saved AI state (dismissals and the Story Bible) could not be read from the ai-state branch; the job log says why"
+          if [ -n "$PR" ] && [ -n "$HEAD_SHA" ]; then
+            nanoif github not-run --pr "$PR" --head-sha "$HEAD_SHA" --reason "$reason"
+          fi
+          echo "AI review did not run: $reason" >> "$GITHUB_STEP_SUMMARY"
+          echo "::error::AI review did not run: ai/ is not linked from the ai-state branch (.github/actions/ai-state, ADR-028)"
+          exit 1
+        fi
+
     - name: Report AI review unavailable
-      if: inputs.runner != 'exe'
+      if: ${{ !cancelled() && inputs.runner != 'exe' }}
       shell: bash
       env:
         PR: ${{ inputs.pr }}
