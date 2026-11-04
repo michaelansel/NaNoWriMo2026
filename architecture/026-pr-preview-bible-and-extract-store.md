@@ -1,6 +1,6 @@
 # ADR-026: PR preview Story Bible and a shared stage-1 extraction store
 
-Status: Accepted
+Status: Accepted; the preview's cache taken from the merge ref is Superseded by ADR-028
 Supersedes: ADR-020 in part (the PR preview shows the Bible as of `main`; every changed passage is re-sent to the model on `main`)
 
 ## Context

@@ -2,7 +2,7 @@
 
 ## Status
 
-Status: Accepted
+Status: Accepted; appending dismissals and outcomes on `main` is Superseded by ADR-028
 Supersedes: ADR-019
 
 ## Context

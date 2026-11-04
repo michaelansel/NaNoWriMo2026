@@ -1,6 +1,6 @@
 # ADR-025: The formatting fixer commits to same-repository pull request branches, and the fixed commit is rebuilt by dispatch
 
-Status: Accepted
+Status: Accepted; the `ai/` writers' target branch (`main`) is Superseded by ADR-028
 
 Supersedes: ADR-018 in part (the report-only linter and the removal of the smart-quotes rule) and ADR-014 in part (no automation commits to a PR branch; the list of `contents: write` jobs). Accepted when the user approved the formatting exception in `PRINCIPLES.md` §2: curly quotes become ASCII, and only files the PR adds or changes are fixed.
 

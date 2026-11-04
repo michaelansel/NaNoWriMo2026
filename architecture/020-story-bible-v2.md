@@ -2,7 +2,7 @@
 
 ## Status
 
-Status: Accepted; the label form of `intentional-conflict:` and the canon pack's intentional marking are Superseded by ADR-024; the `main`-only PR preview Bible and re-sending already-extracted text are Superseded by ADR-026
+Status: Accepted; the label form of `intentional-conflict:` and the canon pack's intentional marking are Superseded by ADR-024; the `main`-only PR preview Bible and re-sending already-extracted text are Superseded by ADR-026; committing the cache to `main` and reading it from the checkout or the merge ref are Superseded by ADR-028
 Supersedes: ADR-010
 
 ## Context

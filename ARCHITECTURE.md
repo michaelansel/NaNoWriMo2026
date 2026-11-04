@@ -14,9 +14,10 @@ system as it is; each part links its ADR in [`architecture/`](architecture/). AD
 | `story-overrides.txt` | Writer-editable Story Bible corrections, syntax-checked on every build | [020](architecture/020-story-bible-v2.md) |
 | `nanoif/` | The one Python package and `nanoif` CLI | [015](architecture/015-nanoif-package.md) |
 | `.github/workflows/` | `build-and-deploy.yml`, `ai-command.yml`, `ai-maintenance.yml`, `intent.yml` | [014](architecture/014-actions-automation-exe-runner.md), [021](architecture/021-intent-gate.md), [025](architecture/025-format-commits-on-pr-branches.md) |
+| `main` ruleset | PR-only; required checks `build`, `test`, `intent`; only repository admins bypass it, no automation writes `main` | [028](architecture/028-main-branch-ruleset.md) |
 | exe runner | Self-hosted Actions runner on an exe.dev VM, label `exe`; runs only AI jobs; `deploy/exe/`, `docs/exe-runner.md` | [014](architecture/014-actions-automation-exe-runner.md) |
 | LLM gateway | OpenAI-compatible endpoint reached from the exe runner with no key; our spend on it is capped monthly | [016](architecture/016-llm-client-and-prompt-contract.md), [023](architecture/023-monthly-spend-cap.md) |
-| `ai/` | State written only by Actions jobs on `main` | [014](architecture/014-actions-automation-exe-runner.md), [022](architecture/022-ai-review-lineage-and-not-run.md), [020](architecture/020-story-bible-v2.md) |
+| `ai-state` branch | Orphan branch holding only `ai/`, written only by Actions; `scripts/ai-state.sh fetch` (action `ai-state`) links it into a git-ignored `<repo>/ai/` after checkout, failing when the branch is unreachable | [028](architecture/028-main-branch-ruleset.md), [020](architecture/020-story-bible-v2.md), [022](architecture/022-ai-review-lineage-and-not-run.md) |
 | `dist/` | Build output; uploaded as `story-preview` on PRs, deployed to Pages from `main`; never committed | [017](architecture/017-git-based-categorization.md) |
 | `landing/` | Hand-written landing page; `build landing` fills in the `StoryTitle` and writes `dist/index.html` | [011](architecture/011-landing-page-design.md) |
 | `WRITERS-GUIDE.md` | Writer's guide, a build input: `build guide` renders it to `dist/writers-guide.html`, linked from the landing page; links only `https://` or in-page `#` | [027](architecture/027-writers-guide-page.md) |
@@ -98,12 +99,12 @@ PR opened / pushed, or dispatched with pr=<N> for a format commit (context: the 
 ```
 push to main (or dispatch with bible-mode=full)
   ├─ build, probe (hosted)
-  ├─ bible-extract (probe runner, contents: write, in the run's `pages` group) → main HEAD
-  │     exe:    nanoif bible extract --incremental|--full → commit ai/story-bible-cache.json
-  │             if changed (rebase-retry once); exit 3 = partial: commit, then fail
+  ├─ bible-extract (probe runner, contents: write, in the run's `pages` group) → src/ of main HEAD
+  │     exe:    nanoif bible extract --incremental|--full → push ai/story-bible-cache.json to
+  │             ai-state if changed (rebase-retry once); exit 3 = partial: push, then fail
   │     hosted: no model call, ::error:: + step summary, job fails
   └─ deploy (hosted, whenever build succeeded) → re-render story-bible + canon-pack from the
-        bible-cache artifact (or the cache at this commit) with --extraction-result → Pages
+        bible-cache artifact (or ai-state's cache) with --extraction-result → Pages
 ```
 
 - Stages: extract per changed passage (model), resolve names (deterministic, then one batched model
@@ -120,15 +121,15 @@ push to main (or dispatch with bible-mode=full)
 
 | File | Written by | Read by |
 |---|---|---|
-| `ai/story-bible-cache.json` (v2, the only Bible cache) | `bible-extract` on main | `bible.assemble` → Story Bible page, canon pack; `/extract-story-bible` dry run |
-| `ai/dismissals.jsonl` | `/dismiss` job on main | `nanoif ai review` (suppression) |
-| `ai/outcomes.jsonl` | `pr-closed` on main (not built) | false-positive review |
+| `ai/story-bible-cache.json` on `ai-state` (v2, the only Bible cache) | `bible-extract` | `bible.assemble` → Story Bible page, canon pack; `/extract-story-bible` dry run |
+| `ai/dismissals.jsonl` on `ai-state` | `/dismiss` job | `nanoif ai review` (suppression) |
+| `ai/outcomes.jsonl` on `ai-state` | `pr-closed` (not built) | false-positive review |
 | `story-overrides.txt` | writers | `nanoif check structure`, Story Bible |
 | `dist/**`, `lib/artifacts/**` | every build | pages, AI jobs via `story-preview` |
 | spend ledger `<NANOIF_LLM_LEDGER_DIR>/YYYY-MM.jsonl` (on the exe VM, not in git) | every model call | the monthly cap ([023](architecture/023-monthly-spend-cap.md)) |
 | extraction store `<NANOIF_BIBLE_STORE_DIR>/` (on the exe VM, not in git; loss = re-extract) | `bible extract` (PR and `main`) | `bible extract` ([026](architecture/026-pr-preview-bible-and-extract-store.md)) |
 
-`contents: write`: `bible-extract` and `/dismiss`, only for `ai/` on `main`; `format`,
+`contents: write`: `bible-extract` and `/dismiss`, pushing only `ai/` to `ai-state`; `format`,
 only for whitespace and quote fixes to prose on a same-repository PR branch. No other automation
 commits to a PR branch ([025](architecture/025-format-commits-on-pr-branches.md)).
 
@@ -196,5 +197,4 @@ repository variables `LLM_PROFILE`, `LLM_MODEL`, `LLM_MONTHLY_USD`, `EXE_HEALTH_
 - `NANOIF_LLM_MAX_TOKENS_PER_JOB` stops a runaway job. The monthly cap refuses a call before it
   would pass the cap, and the review shows both editors as not run with the reset date; an
   unreadable ledger blocks calls rather than counting as zero ([023](architecture/023-monthly-spend-cap.md)).
-- Intent: `nanoif intent check` and the commit gate keep features, ADRs and this page in step
-  with governed code ([021](architecture/021-intent-gate.md)).
+- Intent: `nanoif intent check` and the commit gate keep features, ADRs and this page in step with governed code ([021](architecture/021-intent-gate.md)).
