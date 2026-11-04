@@ -1,6 +1,6 @@
 # Build and deploy
 
-**Status**: building
+**Status**: shipped
 
 ## User problem
 A writer needs to see a passage working before merging it and to see the live story right after.
@@ -82,8 +82,8 @@ The live site's address is the repository's GitHub Pages address; the landing pa
 - AC-build-and-deploy-10: Jobs triggered by a pull request have read-only access to repository contents, except the formatting job, which can push only to the head branch of a pull request from this repository; the jobs that write `ai/` state push only to the `ai-state` branch, and no workflow pushes to `main`. (verify: workflow)
 - AC-build-and-deploy-11: A new push to a pull request cancels that pull request's run in progress, and runs for different pull requests never queue behind each other. (verify: workflow)
 - AC-build-and-deploy-12: The `test` job runs the package tests and lint on every pull request and every push to `main`, and a failure turns its check red. (verify: workflow)
-- AC-build-and-deploy-13: When the saved `ai/` state cannot be fetched from the `ai-state` branch (unreachable, or no `ai/` on it), the `build` check is red, the Build comment says the build did not run and why, and no page is built or deployed; a Story Bible placeholder is never shown in place of saved state that could not be read. (verify: planned)
-- AC-build-and-deploy-14: A pull request against `main` cannot be merged until its `build`, `test` and `intent` checks have passed on its head commit; `Structure`, `format` and the AI checks never block a merge, and no one but the repository admin can push to `main` without a pull request. (verify: planned)
+- AC-build-and-deploy-13: When the saved `ai/` state cannot be fetched from the `ai-state` branch (unreachable, or no `ai/` on it), the `build` check is red, the Build comment says the build did not run and why, and no page is built or deployed; a Story Bible placeholder is never shown in place of saved state that could not be read. (verify: workflow)
+- AC-build-and-deploy-14: A pull request against `main` cannot be merged until its `build`, `test` and `intent` checks have passed on its head commit; `Structure`, `format` and the AI checks never block a merge, and no one but the repository admin can push to `main` without a pull request. (verify: manual)
 
 ## Edge cases
 - **Build step fails on writer content** (for example a passage the story format cannot parse):

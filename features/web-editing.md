@@ -71,7 +71,7 @@ Writers may use any of these; every tool reads them the same way:
 - AC-web-editing-8: `WRITERS-GUIDE.md` is under 220 lines, every step in it happens in the GitHub web UI or on the story's site, and it names no command-line tool. (verify: manual)
 - AC-web-editing-9: `WRITERS-GUIDE.md` takes a first-time writer from accepting the collaborator invitation to an open pull request using only the web UI; the first line after the README's title sends writers to the guide page on the site by its `https://` address, and the README contains no writer steps or note explanations of its own. (verify: manual)
 - AC-web-editing-10: Every file name and entry passage shown in `WRITERS-GUIDE.md` and `README.md` follows the naming rule, and no other naming pattern appears in them. (verify: manual)
-- AC-web-editing-11: A collaborator who is not the repository admin and tries to commit to `main` in the GitHub web editor is refused, offered to commit to a new branch and start a pull request instead, and `main` is unchanged. (verify: planned)
+- AC-web-editing-11: A collaborator who is not the repository admin and tries to commit to `main` in the GitHub web editor is refused, offered to commit to a new branch and start a pull request instead, and `main` is unchanged. (verify: manual)
 
 ## Edge cases
 - **File saved without `.twee`**: it is not part of the story. The link added to the entry
