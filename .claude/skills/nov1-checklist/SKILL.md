@@ -14,7 +14,7 @@ Run every check, then print one table: check, pass/fail, evidence (a command out
 | Main is green | `gh run list --branch main --limit 1` shows success for `build-and-deploy.yml` |
 | Pages serves the landing page | `curl -sI` on the Pages URL from `README.md` returns 200 |
 | Play shows the Start stub | `nanoif build` succeeds and `dist/play.html` contains the `Start` passage |
-| StoryData is filled | `src/StoryData.twee` has a fresh uppercase UUIDv4 IFID, a pinned `format-version`, and `storyStyle` with `perspective`, `protagonist`, `tense` set (no placeholders) |
+| StoryData is filled | `src/StoryData.twee` has a fresh uppercase UUIDv4 IFID, a pinned `format-version`, and `storyStyle` with `perspective` and `tense` set (no placeholders); `protagonist` is optional and only turns on the Style Editor's name check |
 | StoryTitle is set | `src/StoryTitle.twee` is not the placeholder text |
 | `src/` holds only infra files | exactly `Start`, `StoryData`, `StoryTitle`, `StoryStyles`, `PathIdDisplay`, `Unwritten` plus zero or more `<INITIALS>-<YYYYMMDD>.twee` |
 | No caches tracked | `git ls-files` shows no `allpaths-validation-status.json`, no `Resource-Passage Names`, and nothing under `ai/` (it lives on the `ai-state` branch) |
