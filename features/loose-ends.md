@@ -56,18 +56,18 @@ text a reviewed passage is checked against. A passage that links to `Unwritten` 
 reviewed as usual.
 
 ## Acceptance criteria
-- AC-loose-ends-1: `src/Unwritten.twee` contains exactly one passage, `:: Unwritten`, whose text includes "This path hasn't been written yet." and a `(link-undo:)` link labelled "Go back", and contains no `[[...]]` link or goto macro. (verify: planned)
+- AC-loose-ends-1: `src/Unwritten.twee` contains exactly one passage, `:: Unwritten`, whose text includes "This path hasn't been written yet." and a `(link-undo:)` link labelled "Go back", and contains no `[[...]]` link or goto macro. (verify: test)
 - AC-loose-ends-2: In `play.html`, clicking a choice that points at `Unwritten` shows "This path hasn't been written yet.", and clicking "Go back" returns to the passage that held the choice. (verify: planned)
-- AC-loose-ends-3: Run over a story whose passages link to `Unwritten` in each link form (`[[Unwritten]]`, `[[Text->Unwritten]]`, `[[Unwritten<-Text]]`, `[[Text|Unwritten]]`, `(link-goto: "Text", "Unwritten")`), the structure check reports no finding for any of those links and no `orphan-passage` or `dead-end` for `Unwritten`. (verify: planned)
-- AC-loose-ends-4: With no link to `Unwritten` anywhere, the structure check reports no finding for `Unwritten` or its file. (verify: planned)
-- AC-loose-ends-5: A link to `unwritten`, `UNWRITTEN`, or `Unwriten` is a `broken-link` error naming that exact target, and its message contains no suggested passage name. (verify: planned)
-- AC-loose-ends-6: `src/Unwritten.twee` gets no `file-naming` or `missing-day-passage` warning. (verify: planned)
-- AC-loose-ends-7: The Passages page has a section headed "Loose ends" above the passage table with one row per link to `Unwritten`, sorted by file then line, each showing the link's display text, the passage it is in, its `file:line`, and the initials and day of that file; a passage with two such links has two rows, and a passage in a file that is not a writer's file shows blank initials and day. (verify: planned)
-- AC-loose-ends-8: With no link to `Unwritten`, the Loose ends section reads "No loose ends." and has no rows. (verify: planned)
-- AC-loose-ends-9: Choice text in the Loose ends section is HTML-escaped, so markup in it shows as text. (verify: planned)
-- AC-loose-ends-10: Story Bible extraction never sends the `Unwritten` passage to the model, and no fact, entity or Freshness entry names `Unwritten`. (verify: planned)
-- AC-loose-ends-11: The Continuity and Style editors never review `Unwritten`, and the earlier text given to them for any passage never contains the `Unwritten` passage's text; a changed passage that links to `Unwritten` is still reviewed. (verify: planned)
-- AC-loose-ends-12: A route that reaches `Unwritten` appears on All Paths as one route whose last passage is `Unwritten`. (verify: planned)
+- AC-loose-ends-3: Run over a story whose passages link to `Unwritten` in each link form (`[[Unwritten]]`, `[[Text->Unwritten]]`, `[[Unwritten<-Text]]`, `[[Text|Unwritten]]`, `(link-goto: "Text", "Unwritten")`), the structure check reports no finding for any of those links and no `orphan-passage` or `dead-end` for `Unwritten`. (verify: test)
+- AC-loose-ends-4: With no link to `Unwritten` anywhere, the structure check reports no finding for `Unwritten` or its file. (verify: test)
+- AC-loose-ends-5: A link to `unwritten`, `UNWRITTEN`, or `Unwriten` is a `broken-link` error naming that exact target, and its message contains no suggested passage name. (verify: test)
+- AC-loose-ends-6: `src/Unwritten.twee` gets no `file-naming` or `missing-day-passage` warning. (verify: test)
+- AC-loose-ends-7: The Passages page has a section headed "Loose ends" above the passage table with one row per link to `Unwritten`, sorted by file then line, each showing the link's display text, the passage it is in, its `file:line`, and the initials and day of that file; a passage with two such links has two rows, and a passage in a file that is not a writer's file shows blank initials and day. (verify: test)
+- AC-loose-ends-8: With no link to `Unwritten`, the Loose ends section reads "No loose ends." and has no rows. (verify: test)
+- AC-loose-ends-9: Choice text in the Loose ends section is HTML-escaped, so markup in it shows as text. (verify: test)
+- AC-loose-ends-10: Story Bible extraction never sends the `Unwritten` passage to the model, and no fact, entity or Freshness entry names `Unwritten`. (verify: test)
+- AC-loose-ends-11: The Continuity and Style editors never review `Unwritten`, and the earlier text given to them for any passage never contains the `Unwritten` passage's text; a changed passage that links to `Unwritten` is still reviewed. (verify: test)
+- AC-loose-ends-12: A route that reaches `Unwritten` appears on All Paths as one route whose last passage is `Unwritten`. (verify: test)
 - AC-loose-ends-13: `WRITERS-GUIDE.md` tells a writer how to point a choice at `Unwritten`, that the name is exact, and how to pick a loose end up from the Passages page, using only the web UI and the site. (verify: manual)
 
 ## Edge cases

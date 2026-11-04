@@ -81,6 +81,8 @@
         .links a { color: #667eea; text-decoration: none; }
         .links a:hover { text-decoration: underline; }
         .none { color: #aaa; }
+        .loose-ends { margin-bottom: 1.5rem; }
+        .loose-ends h2 { color: #667eea; font-size: 1.25rem; margin-bottom: 0.5rem; }
     </style>
 </head>
 <body>
@@ -90,12 +92,36 @@
     </div>
 
     <div class="container">
+        <section class="loose-ends">
+            <h2>Loose ends</h2>
+{% if loose_ends %}
+            <table>
+                <thead>
+                    <tr><th>Choice</th><th>Passage</th><th>File</th><th>Writer</th><th>Day</th></tr>
+                </thead>
+                <tbody>
+{% for end in loose_ends %}
+                    <tr>
+                        <td>{{ end.text }}</td>
+                        <td class="name">{{ end.passage }}</td>
+                        <td class="file">{{ end.file }}:{{ end.line }}</td>
+                        <td>{{ end.initials or '' }}</td>
+                        <td class="num">{{ end.day if end.day is not none else '' }}</td>
+                    </tr>
+{% endfor %}
+                </tbody>
+            </table>
+{% else %}
+            <p class="none">No loose ends.</p>
+{% endif %}
+        </section>
+
         <div class="toolbar">
             <input type="search" id="filter" placeholder="Filter by passage, file, writer, day or link..." autofocus>
             <span class="count"><span id="shown">{{ rows|length }}</span> of {{ rows|length }} shown</span>
         </div>
 
-        <table>
+        <table id="passages">
             <thead>
                 <tr>
                     <th>Passage</th>
@@ -128,7 +154,7 @@
     <script>
         (function () {
             var input = document.getElementById('filter');
-            var rows = Array.prototype.slice.call(document.querySelectorAll('tbody tr'));
+            var rows = Array.prototype.slice.call(document.querySelectorAll('#passages tbody tr'));
             var shown = document.getElementById('shown');
             input.addEventListener('input', function () {
                 var terms = input.value.toLowerCase().split(/\s+/).filter(Boolean);

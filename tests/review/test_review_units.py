@@ -233,3 +233,20 @@ def test_read_story_style(tmp_path):
     assert "no storyStyle" in missing.problem
     (tmp_path / "StoryData.twee").write_text(":: StoryData\n{not json\n", encoding="utf-8")
     assert "not valid JSON" in read_story_style(tmp_path).problem
+
+
+@pytest.mark.intent("AC-loose-ends-11")
+def test_unwritten_is_never_reviewed_or_context_but_a_passage_linking_to_it_is():
+    passages = {
+        "Start": "Wren stood at the jetty. [[Take the ferry->Ferry]] or [[Climb the hill->Unwritten]]",
+        "Ferry": "The fog lay on the river. [[The weir]] or [[Gull Chapel->Unwritten]]",
+        "The weir": "The weir roared.",
+        "Unwritten": "This path hasn't been written yet.\n\n(link-undo: \"Go back\")",
+    }
+    story = ReviewStory.from_graph(graph_of(passages))
+    assert "Unwritten" not in story.content
+    assert select_passages(story, "changed", {"changed": ["Ferry", "Unwritten"]}) == ["Ferry"]
+    for name in ("Ferry", "The weir"):
+        for unit in continuity_units(story, name):
+            assert "hasn't been written yet" not in unit.text
+            assert "Unwritten" not in [entry.name for entry in unit.passages]

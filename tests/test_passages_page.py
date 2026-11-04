@@ -118,8 +118,67 @@ def test_passage_names_are_escaped(tmp_path):
         "metadata": {"story_title": "T & <T>", "ifid": "", "format": "F", "format_version": "1"},
     }
     write(tmp_path / "graph.json", json.dumps(graph))
+    (tmp_path / "src").mkdir()
     html = build_passages(tmp_path / "src", tmp_path / "graph.json", tmp_path / "dist").html_path.read_text()
     assert "<i>Fish</i>" not in html
     assert "&lt;i&gt;Fish&lt;/i&gt; &amp; Chips" in html
     assert "<title>Passages - T &amp; &lt;T&gt;</title>" in html
     assert html.count("not in src/") == 2
+
+
+def loose_story(tmp_path):
+    src = tmp_path / "src"
+    write(src / "Start.twee", ":: Start\n\nThe river town.\n\n[[Day 1 EV]]\n[[Take the ferry->Unwritten]]\n")
+    write(src / "Unwritten.twee", ":: Unwritten\n\nThis path hasn't been written yet.\n\n(link-undo: \"Go back\")\n")
+    write(
+        src / "EV-20261101.twee",
+        ":: Day 1 EV\n\nWren woke.\n\n[[The weir]]\n\n:: The weir\n\nThe weir roared.\n\n"
+        "[[Go to the <b>weir</b>->Unwritten]]\n(link-goto: \"Knock at the widow's door\", \"Unwritten\")\n",
+    )
+    return src
+
+
+@pytest.mark.intent("AC-loose-ends-7")
+def test_loose_ends_one_row_per_link_sorted_with_structure_check_lines(tmp_path):
+    from nanoif.check.structure import check_structure
+    from nanoif.formats.passages import LooseEnd, loose_ends
+
+    src = loose_story(tmp_path)
+    assert loose_ends(src, tmp_path) == [
+        LooseEnd("Go to the <b>weir</b>", "The weir", "src/EV-20261101.twee", 11, "EV", 1),
+        LooseEnd("Knock at the widow's door", "The weir", "src/EV-20261101.twee", 12, "EV", 1),
+        LooseEnd("Take the ferry", "Start", "src/Start.twee", 6, None, None),
+    ]
+    (src / "Unwritten.twee").unlink()
+    broken = {(f.file, f.line) for f in check_structure(src) if f.code == "broken-link"}
+    assert broken == {(e.file, e.line) for e in loose_ends(src, tmp_path)}
+
+
+def test_loose_ends_unreadable_source_is_an_error(tmp_path):
+    from nanoif.formats.passages import loose_ends
+
+    src = loose_story(tmp_path)
+    (src / "EV-20261101.twee").write_bytes(b":: Day 1 EV\n\n\xff\xfe\n")
+    with pytest.raises(BuildError, match="EV-20261101.twee"):
+        loose_ends(src, tmp_path)
+    with pytest.raises(BuildError, match="not found"):
+        loose_ends(tmp_path / "nope", tmp_path)
+
+
+@pytest.mark.intent("AC-loose-ends-7", "AC-loose-ends-9")
+def test_loose_ends_section_sits_above_the_table_and_escapes_choice_text(tmp_path):
+    src = loose_story(tmp_path)
+    write(tmp_path / "lib" / "artifacts" / "story_graph.json", json.dumps(parse_twee_dir(src)))
+    html = build_passages(src, tmp_path / "lib" / "artifacts" / "story_graph.json", tmp_path / "dist").html_path.read_text()
+    assert '<h2>Loose ends</h2>' in html
+    assert html.index("Loose ends") < html.index('<table id="passages">')
+    assert "Go to the &lt;b&gt;weir&lt;/b&gt;" in html and "<b>weir</b>" not in html
+    assert "src/EV-20261101.twee:11" in html and "Knock at the widow&#39;s door" in html
+    assert "No loose ends." not in html
+
+
+@pytest.mark.intent("AC-loose-ends-8")
+def test_no_loose_ends_says_so(story):
+    html = build_passages(story / "src", story / "lib" / "artifacts" / "story_graph.json", story / "dist").html_path.read_text()
+    section = html[html.index("<h2>Loose ends</h2>") : html.index('<table id="passages">')]
+    assert "No loose ends." in section and "<tr" not in section

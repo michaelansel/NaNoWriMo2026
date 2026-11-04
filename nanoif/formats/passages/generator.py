@@ -3,7 +3,8 @@
 Rows come from ``story_graph.json`` (passages and links) and
 ``nanoif.twee.files`` (file, line, tags). Writer, date and day are inferred
 from the file name (``<INITIALS>-<YYYYMMDD>.twee``) and from the file's
-``:: Day <N> <INITIALS>`` passage when there is one.
+``:: Day <N> <INITIALS>`` passage when there is one. The Loose ends list above the
+table is read from ``src/`` because ``story_graph.json`` has no link lines.
 """
 
 from __future__ import annotations
@@ -13,17 +14,22 @@ from dataclasses import dataclass, replace
 from datetime import datetime
 from pathlib import Path
 
+from nanoif.errors import BuildError
 from nanoif.formats.common import html_environment
 from nanoif.schemas.artifacts import load_artifact
 from nanoif.twee.files import (
     DAY_PASSAGE_RE,
     PassageLocation,
+    find_twee_files,
+    link_line,
     parse_prose_file_name,
     passage_locations,
     relative_file,
+    split_twee,
 )
+from nanoif.twee.links import find_links
 from nanoif.twee.parse import StoryGraph
-from nanoif.twee.prose import word_count
+from nanoif.twee.prose import UNWRITTEN, word_count
 
 
 @dataclass(frozen=True)
@@ -58,6 +64,27 @@ class PassageRow:
 
 
 @dataclass(frozen=True)
+class LooseEnd:
+    """One choice that points at :data:`~nanoif.twee.prose.UNWRITTEN`.
+
+    Attributes:
+        text: The choice as the reader sees it.
+        passage: The passage holding the choice.
+        file: Repository-relative source file.
+        line: Line of the link in that file.
+        initials: Writer initials of the file, when inferable.
+        day: Day number of the file, when inferable.
+    """
+
+    text: str
+    passage: str
+    file: str
+    line: int
+    initials: str | None
+    day: int | None
+
+
+@dataclass(frozen=True)
 class PassagesResult:
     """What ``build_passages`` wrote.
 
@@ -85,6 +112,54 @@ def _file_days(locations: Mapping[str, PassageLocation]) -> dict[Path, tuple[int
     return {file: (day, initials) for file, (day, initials, _line) in days.items()}
 
 
+def _writer(
+    file: Path, file_days: Mapping[Path, tuple[int, str]]
+) -> tuple[str | None, str | None, int | None]:
+    """Return the initials, date and day a file's name and ``Day`` passage give."""
+    parsed = parse_prose_file_name(file.name)
+    initials, date = (parsed.initials, parsed.date) if parsed else (None, None)
+    day: int | None = None
+    if file in file_days:
+        day, day_initials = file_days[file]
+        initials = initials or day_initials
+    return initials, date, day
+
+
+def loose_ends(src_dir: Path, repo_root: Path) -> list[LooseEnd]:
+    """List every link to the ``Unwritten`` passage under ``src_dir``.
+
+    Args:
+        src_dir: The story source.
+        repo_root: Root that file paths are shown relative to.
+
+    Returns:
+        One entry per link, sorted by file then line.
+
+    Raises:
+        BuildError: ``src_dir`` does not exist or a ``.twee`` file cannot be read as UTF-8.
+    """
+    if not src_dir.is_dir():
+        raise BuildError(f"story source not found: {src_dir}")
+    root = repo_root.resolve()
+    found: list[tuple[Path, str, int, str]] = []
+    for path in find_twee_files(src_dir):
+        try:
+            text = path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError) as exc:
+            raise BuildError(f"cannot read {path.relative_to(root)} for loose ends: {exc}") from exc
+        for passage in split_twee(text):
+            for link in find_links(passage.text):
+                if link.target == UNWRITTEN:
+                    found.append((path, passage.name, link_line(passage, link), link.text))
+    file_days = _file_days(passage_locations(src_dir))
+    ends = []
+    for path, passage, line, text in found:
+        initials, _date, day = _writer(path, file_days)
+        file = path.relative_to(root).as_posix()
+        ends.append(LooseEnd(text, passage, file, line, initials, day))
+    return sorted(ends, key=lambda end: (end.file, end.line))
+
+
 def passage_rows(
     story_graph: StoryGraph, locations: Mapping[str, PassageLocation], repo_root: Path
 ) -> list[PassageRow]:
@@ -107,15 +182,7 @@ def passage_rows(
     rows: list[PassageRow] = []
     for name, passage in story_graph["passages"].items():
         location = locations.get(name)
-        initials = date = None
-        day: int | None = None
-        if location is not None:
-            parsed = parse_prose_file_name(location.file.name)
-            if parsed is not None:
-                initials, date = parsed.initials, parsed.date
-            if location.file in file_days:
-                day, day_initials = file_days[location.file]
-                initials = initials or day_initials
+        initials, date, day = _writer(location.file, file_days) if location else (None, None, None)
         rows.append(
             PassageRow(
                 name=name,
@@ -135,12 +202,15 @@ def passage_rows(
     return [replace(row, anchor=f"p{index}") for index, row in enumerate(rows, 1)]
 
 
-def render_html(story_title: str, rows: list[PassageRow], generated_at: datetime) -> str:
+def render_html(
+    story_title: str, rows: list[PassageRow], ends: list[LooseEnd], generated_at: datetime
+) -> str:
     """Render ``passages.html``.
 
     Args:
         story_title: Shown in the header.
         rows: From :func:`passage_rows`.
+        ends: From :func:`loose_ends`.
         generated_at: Shown in the header.
 
     Returns:
@@ -153,6 +223,7 @@ def render_html(story_title: str, rows: list[PassageRow], generated_at: datetime
         .render(
             story_title=story_title,
             rows=rows,
+            loose_ends=ends,
             anchors=anchors,
             file_count=len({row.file for row in rows if row.file}),
             generated_date=generated_at.strftime("%Y-%m-%d %H:%M"),
@@ -178,15 +249,20 @@ def build_passages(
         The page written and its counts.
 
     Raises:
-        BuildError: If the story graph is missing or not valid JSON.
+        BuildError: If the story graph is missing or not valid JSON, or ``src/`` cannot be
+            read for the loose ends.
         ArtifactValidationError: If it does not match its schema.
     """
     story_graph = load_artifact(story_graph_path, "story_graph")
-    rows = passage_rows(story_graph, passage_locations(src_dir), src_dir.resolve().parent)
+    repo_root = src_dir.resolve().parent
+    ends = loose_ends(src_dir, repo_root)
+    rows = passage_rows(story_graph, passage_locations(src_dir), repo_root)
     output_dir.mkdir(parents=True, exist_ok=True)
     html_path = output_dir / "passages.html"
     html_path.write_text(
-        render_html(story_graph["metadata"]["story_title"], rows, generated_at or datetime.now()),
+        render_html(
+            story_graph["metadata"]["story_title"], rows, ends, generated_at or datetime.now()
+        ),
         encoding="utf-8",
     )
     return PassagesResult(

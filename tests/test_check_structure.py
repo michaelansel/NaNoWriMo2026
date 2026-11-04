@@ -418,3 +418,57 @@ def test_cli_default_overrides_path_is_next_to_src(tmp_path, capsys):
     write(tmp_path / "story-overrides.txt", "nonsense line\n")
     assert main(["check", "structure", str(src)]) == 1
     assert "[overrides-syntax]" in capsys.readouterr().out
+
+
+UNWRITTEN_TWEE = ":: Unwritten\n\nThis path hasn't been written yet.\n\n(link-undo: \"Go back\")\n"
+
+
+@pytest.mark.intent("AC-loose-ends-3", "AC-structure-check-7", "AC-structure-check-9")
+def test_every_link_form_to_unwritten_resolves_and_unwritten_is_never_reported(tmp_path):
+    src = make_story(tmp_path)
+    write(src / "Unwritten.twee", UNWRITTEN_TWEE)
+    write(
+        src / "CD-20261101.twee",
+        ":: Day 1 CD\n\nEvening.\n\n"
+        "[[Unwritten]]\n[[Go to the weir->Unwritten]]\n[[Unwritten<-Knock at the widow's door]]\n"
+        "[[Climb to Gull Chapel|Unwritten]]\n(link-goto: \"Take the ferry\", \"Unwritten\")\n",
+    )
+    findings = check_structure(src)
+    assert [f for f in findings if f.passage in ("Day 1 CD", "Unwritten")] == []
+    assert [f for f in findings if f.file == "src/Unwritten.twee"] == []
+
+
+@pytest.mark.intent("AC-loose-ends-4", "AC-loose-ends-6")
+def test_unlinked_unwritten_and_its_file_get_no_finding(tmp_path):
+    src = make_story(tmp_path)
+    write(src / "Unwritten.twee", UNWRITTEN_TWEE)
+    findings = check_structure(src)
+    assert [f for f in findings if f.passage == "Unwritten" or f.file == "src/Unwritten.twee"] == []
+
+
+@pytest.mark.intent("AC-loose-ends-5")
+@pytest.mark.parametrize("target", ["unwritten", "UNWRITTEN", "Unwriten"])
+def test_a_misspelled_unwritten_is_a_plain_broken_link(tmp_path, target):
+    src = make_story(tmp_path)
+    write(src / "Unwritten.twee", UNWRITTEN_TWEE)
+    write(src / "CD-20261101.twee", f":: Day 1 CD\n\nEvening.\n\n[[Go to the weir->{target}]]\n")
+    broken = [f for f in check_structure(src) if f.code == "broken-link"]
+    assert broken == [
+        Finding("error", "broken-link", "src/CD-20261101.twee", 5, "Day 1 CD",
+                f"'Day 1 CD' links to {target!r}, which does not exist"),
+    ]
+
+
+@pytest.mark.intent("AC-loose-ends-1")
+def test_the_repository_unwritten_passage_only_offers_go_back():
+    from pathlib import Path
+
+    from nanoif.twee.files import split_twee
+    from nanoif.twee.links import find_links
+
+    text = (Path(__file__).resolve().parents[1] / "src" / "Unwritten.twee").read_text(encoding="utf-8")
+    passages = split_twee(text)
+    assert [p.name for p in passages] == ["Unwritten"]
+    assert "This path hasn't been written yet." in passages[0].text
+    assert '(link-undo: "Go back")' in passages[0].text
+    assert find_links(text) == [] and "[[" not in text

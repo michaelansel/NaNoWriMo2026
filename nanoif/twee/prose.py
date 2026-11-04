@@ -13,17 +13,21 @@ HTML_TAG_RE = re.compile(r"<[^>]+>")
 NON_PROSE_TAGS = frozenset({"script", "stylesheet", "footer", "header", "startup"})
 """Passages with these tags are page furniture or code, not story prose."""
 
+UNWRITTEN = "Unwritten"
+"""The one passage a choice points at until someone writes where it leads (a loose end)."""
+
 INFRA_PASSAGES = frozenset(
-    {"StoryData", "StoryTitle", "StoryStyles", "PathIdDisplay", "PathIdLookup"}
+    {"StoryData", "StoryTitle", "StoryStyles", "PathIdDisplay", "PathIdLookup", UNWRITTEN}
 )
-"""Passages that describe or decorate the story rather than tell it."""
+"""Passages that describe or decorate the story rather than tell it, and :data:`UNWRITTEN`,
+which is a real passage (so links to it resolve) but not story prose."""
 
 
 def is_infra(name: str, tags: Iterable[str] = ()) -> bool:
     """Return whether a passage is infrastructure rather than story prose.
 
-    The editors and the Story Bible use this one definition, so they read the same
-    passages.
+    The editors, the Story Bible and the structure check's orphan and dead-end rules use
+    this one definition, so they agree on what is story.
 
     Args:
         name: Passage name.

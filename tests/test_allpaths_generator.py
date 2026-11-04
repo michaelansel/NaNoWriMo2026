@@ -252,3 +252,19 @@ def test_cli_build_allpaths_bad_base_ref_reports_error(story_repo, capsys):
     ]
     assert main(argv) == 1
     assert "error: git rev-parse" in capsys.readouterr().err
+
+
+@pytest.mark.intent("AC-loose-ends-12")
+def test_a_route_to_unwritten_is_one_route_ending_at_unwritten(story_repo):
+    src = story_repo / "src"
+    (src / "Unwritten.twee").write_text(
+        ":: Unwritten\n\nThis path hasn't been written yet.\n\n(link-undo: \"Go back\")\n", encoding="utf-8"
+    )
+    (src / "AB-20251102.twee").write_text(
+        ":: End1\nLeft ending.\n\n:: End2\nRight ending. [[Wade in->Unwritten]] or [[Swim->Unwritten]]\n",
+        encoding="utf-8",
+    )
+    git(story_repo, "add", "-A")
+    write_story_graph(story_repo)
+    routes = [list(p.route) for p in run(config(story_repo)).paths]
+    assert routes == [["Start", "Left", "End1"], ["Start", "Right", "End2", "Unwritten"]]

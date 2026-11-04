@@ -7,6 +7,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
+from nanoif.twee.links import Link
+
 PASSAGE_HEADER_RE = re.compile(
     r"^::[ \t]*(?P<name>[^\[\{\s:][^\[\{\r\n]*?)[ \t]*"
     r"(?:\[(?P<tags>[^\]\r\n]*)\])?[ \t]*"
@@ -74,6 +76,19 @@ class TweePassage:
     text: str
     line: int
     body_line: int
+
+
+def link_line(passage: TweePassage, link: Link) -> int:
+    """Return the 1-based file line where a link in a passage starts.
+
+    Args:
+        passage: The passage, as :func:`split_twee` returns it.
+        link: A link found in ``passage.text``.
+
+    Returns:
+        The line in the passage's file.
+    """
+    return passage.body_line + passage.text.count("\n", 0, link.start)
 
 
 @dataclass(frozen=True)

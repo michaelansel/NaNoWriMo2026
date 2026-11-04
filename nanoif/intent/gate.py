@@ -14,6 +14,7 @@ INFRA_PASSAGE_FILES = {
     "src/StoryTitle.twee",
     "src/StoryStyles.twee",
     "src/PathIdDisplay.twee",
+    "src/Unwritten.twee",
 }
 GOVERNED_PREFIXES = ("nanoif/", ".github/", "scripts/", "deploy/", "landing/")
 GOVERNED_FILES = {"pyproject.toml"} | INFRA_PASSAGE_FILES

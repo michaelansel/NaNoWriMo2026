@@ -27,18 +27,21 @@ from nanoif.twee.files import (
     DAY_PASSAGE_RE,
     TweePassage,
     find_twee_files,
+    link_line,
     parse_prose_file_name,
     split_twee,
 )
 from nanoif.twee.links import find_links
+from nanoif.twee.prose import UNWRITTEN, is_infra
 
 Level = Literal["error", "warning", "info"]
 
-INFRA_FILES = frozenset({"Start", "StoryData", "StoryTitle", "StoryStyles", "PathIdDisplay"})
+INFRA_FILES = frozenset(
+    {"Start", "StoryData", "StoryTitle", "StoryStyles", "PathIdDisplay", UNWRITTEN}
+)
 GENERATED_FILES = frozenset({"PathIdLookup"})
 METADATA_PASSAGES = frozenset({"StoryData", "StoryTitle"})
 CODE_TAGS = frozenset({"script", "stylesheet"})
-NOT_IN_FLOW_TAGS = CODE_TAGS | {"footer", "header", "startup"}
 ENDING_TAG = "ending"
 IFID_RE = re.compile(r"^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$", re.I)
 STORY_STYLE_VALUES = {
@@ -169,9 +172,7 @@ def _check_story_data(passages: dict[str, _Declared], findings: list[Finding]) -
 
 
 def _in_flow(entry: _Declared) -> bool:
-    return entry.passage.name not in METADATA_PASSAGES and NOT_IN_FLOW_TAGS.isdisjoint(
-        entry.passage.tags
-    )
+    return not is_infra(entry.passage.name, entry.passage.tags)
 
 
 def _check_links(
@@ -193,7 +194,7 @@ def _check_links(
                     "error",
                     "broken-link",
                     entry.file,
-                    entry.passage.body_line + entry.passage.text.count("\n", 0, link.start),
+                    link_line(entry.passage, link),
                     name,
                     f"{name!r} links to {link.target!r}, which does not exist",
                 )

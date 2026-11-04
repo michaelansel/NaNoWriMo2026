@@ -60,3 +60,14 @@ def test_a_file_that_is_not_utf8_is_a_typed_error(tmp_path):
     (tmp_path / "src" / "EV-20261101.twee").write_bytes(b":: Day 1 EV\n\n\xff\xfe\n")
     with pytest.raises(BibleError, match="EV-20261101.twee"):
         bible_passages(tmp_path)
+
+
+@pytest.mark.intent("AC-loose-ends-10")
+def test_the_unwritten_passage_is_not_read_but_a_passage_linking_to_it_is(tmp_path):
+    write(tmp_path / "src" / "Start.twee", ":: Start\n\nThe river town. [[Day 1 EV]]\n")
+    write(
+        tmp_path / "src" / "Unwritten.twee",
+        ":: Unwritten\n\nThis path hasn't been written yet.\n\n(link-undo: \"Go back\")\n",
+    )
+    write(tmp_path / "src" / "EV-20261101.twee", ":: Day 1 EV\n\nWren woke. [[Go to the weir->Unwritten]]\n")
+    assert [p.name for p in bible_passages(tmp_path)] == ["Day 1 EV", "Start"]
